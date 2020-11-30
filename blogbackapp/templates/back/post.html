@@ -1,0 +1,331 @@
+{% extends 'back/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block link %}
+
+{% endblock link %}
+{% block content %}
+    <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <!-- ============================================================== -->
+                <!-- pageheader -->
+                <!-- ============================================================== -->
+                {% if not request.user.is_superuser and not blogger.group_status == 'VIEWER' %}
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="page-header">
+                                <h2 class="pageheader-title">Your Posts </h2>
+                                <p class="pageheader-text">Add, Edit And Delete.</p>
+                                <div class="page-breadcrumb">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="{% url 'BLOGBACK:home' %}" class="breadcrumb-link">Dashboard</a></li>
+                                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Your Posts</a></li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                             <form action="{% url 'BLOGBACK:addposts' %}" method="post" enctype="multipart/form-data">
+                                 {% csrf_token %}
+                                 <div class="form-group">
+                                    <label for="">Upload Picture</label>
+                                    <label for="profile_image" style="display: flex; justify-content:center; flex-direction: column;align-items: center; width: 100%; height: 400px; overflow:hidden;">
+                                        <img style="width: 100%; height: 100%; object-fit: cover;" class="blah" src="{% static 'back/assets/SprySophisticatedKusimanse-small.gif' %}" alt="">
+                                    </label>
+                                    <input required style="position: relative; display: none" onchange="readURL(this)" type="file"
+                                           name="post_image" id="profile_image" class="inputfile"/>
+                                 </div>
+                                  <div class="form-group">
+                                    <label for="exampleInputEmail1">Posts Title</label>
+                                    <input type="text" name="title" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                    <small id="emailHelp" class="form-text text-muted">Add Title</small>
+                                  </div>
+                                 <div class=" form-group  " style="padding: 0;">
+                                    <label>Category</label> <br>
+                                    <select class="selectpicker" name="category">
+                                        {% for c in categories %}
+                                            <option value="{{ c.id }}">{{ c.category }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                 <div class="form-group">
+                                    <div class="form-group">
+                                        <label>Description</label> <br>
+                                        <textarea name="description" class="form-control" id="bio" ></textarea>
+                                    </div>
+                                </div>
+                                <h5 class="card-title">Other</h5>
+                                <div class="card-body border-top">
+                                    <h5 class="card-title">Multiple Category Tags</h5>
+                                    <select class="selectpicker" name="category[]" multiple>
+                                        {% for c in categories %}
+                                            <option value="{{ c.id }}">{{ c.category }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                               <button type="submit" class="btn btn-success">Save </button>
+                            </form>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                    {% for category in categories %}
+                        <div class="modal fade" id="editexampleModalLabel{{ category.id }}" tabindex="-1" aria-labelledby="editexampleModalLabel{{ category.id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <form action="{% url 'BLOGBACK:editcategory' category.id %}" method="post">
+                                     {% csrf_token %}
+                                  <div class="form-group">
+                                    <label for="exampleInputEmail1{{ category.id }}">Category Name</label>
+                                    <input type="text" value="{{ category.category }}" name="category" class="form-control" id="exampleInputEmail1{{ category.id }}" aria-describedby="emailHelp">
+                                    <small id="emailHelp" class="form-text text-muted">Edit Category</small>
+                                  </div>
+        {#                          <button type="submit" class="btn btn-success">Submit</button>#}
+        {#                           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>#}
+                                   <button type="submit" class="btn btn-success">Save </button>
+                                </form>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal fade" id="deleteexampleModal{{ category.id }}" tabindex="-1" aria-labelledby="deleteexampleModalLabel{{ category.id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete Category</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <p>Are You Sure You Want to delete</p>
+                                  <a href="{% url 'BLOGBACK:deletecategory' category.id %}" class="btn-danger btn">Delete</a>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                    {% endfor %}
+                    <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                               <div class="card">
+                                <h5 class="card-header">Your Posts Table</h5>
+                                <div class="card-body">
+                                    <button class="btn btn-success my-3" data-toggle="modal" data-target="#exampleModal">Add</button>
+                                    <div class="table-responsive">
+                                        <table id="myTable" class="table table-striped table-bordered first">
+                                             <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Created_at</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for category in categories %}
+                                                <tr>
+                                                    <th scope="row">{{forloop.counter}}</th>
+                                                    <td>{{category.category|title}}</td>
+                                                    <td>{{category.created_at|date:'d-M-Y'}}</td>
+                                                    <td>
+                                                        <a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ category.id }}" class="btn btn-success btn-sm rounded">Edit</a>
+                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ category.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                {% else %}
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="page-header">
+                                <h2 class="pageheader-title">All Posts </h2>
+                                <p class="pageheader-text">Verify and Delete.</p>
+                                <div class="page-breadcrumb">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="{% url 'BLOGBACK:home' %}" class="breadcrumb-link">Dashboard</a></li>
+                                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">All Posts</a></li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                             <form action="{% url 'BLOGBACK:addcategory' %}" method="post">
+                                 {% csrf_token %}
+                                  <div class="form-group">
+                                    <label for="exampleInputEmail1">Posts Title</label>
+                                    <input type="text" name="category" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                    <small id="emailHelp" class="form-text text-muted">Add Post</small>
+                                  </div>
+    {#                          <button type="submit" class="btn btn-success">Submit</button>#}
+    {#                           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>#}
+                               <button type="submit" class="btn btn-success">Save </button>
+                            </form>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                    {% for category in categories %}
+                        <div class="modal fade" id="editexampleModalLabel{{ category.id }}" tabindex="-1" aria-labelledby="editexampleModalLabel{{ category.id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <form action="{% url 'BLOGBACK:editcategory' category.id %}" method="post">
+                                     {% csrf_token %}
+                                  <div class="form-group">
+                                    <label for="exampleInputEmail1{{ category.id }}">Category Name</label>
+                                    <input type="text" value="{{ category.category }}" name="category" class="form-control" id="exampleInputEmail1{{ category.id }}" aria-describedby="emailHelp">
+                                    <small id="emailHelp" class="form-text text-muted">Edit Category</small>
+                                  </div>
+        {#                          <button type="submit" class="btn btn-success">Submit</button>#}
+        {#                           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>#}
+                                   <button type="submit" class="btn btn-success">Save </button>
+                                </form>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal fade" id="deleteexampleModal{{ category.id }}" tabindex="-1" aria-labelledby="deleteexampleModalLabel{{ category.id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete Category</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <p>Are You Sure You Want to delete</p>
+                                  <a href="{% url 'BLOGBACK:deletecategory' category.id %}" class="btn-danger btn">Delete</a>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                    {% endfor %}
+                    <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                               <div class="card">
+                                <h5 class="card-header">All Posts Table</h5>
+                                <div class="card-body">
+                                    <button class="btn btn-success my-3" data-toggle="modal" data-target="#exampleModal">Add</button>
+                                    <div class="table-responsive">
+                                        <table id="myTable" class="table table-striped table-bordered first">
+                                             <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Created_at</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for category in categories %}
+                                                <tr>
+                                                    <th scope="row">{{forloop.counter}}</th>
+                                                    <td>{{category.category|title}}</td>
+                                                    <td>{{category.created_at|date:'d-M-Y'}}</td>
+                                                    <td>
+                                                        <a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ category.id }}" class="btn btn-success btn-sm rounded">Edit</a>
+                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ category.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                {% endif %}
+
+            </div>
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <div class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                            Copyright © 2018 Concept. All rights reserved. Dashboard by <a href="https://colorlib.com/wp/">Colorlib</a>.
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                            <div class="text-md-right footer-links d-none d-sm-block">
+                                <a href="javascript: void(0);">About</a>
+                                <a href="javascript: void(0);">Support</a>
+                                <a href="javascript: void(0);">Contact Us</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- end footer -->
+            <!-- ============================================================== -->
+        </div>
+{% endblock content %}
+{% block script %}
+    <script>
+        function readURL(input) {
+
+        if (input.files && input.files[0]) {
+         var reader = new FileReader();
+         // var disclaimer= document.getElementById("");
+            reader.onload = function (element) {
+                $('.blah').attr('src', element.target.result);
+                {#$('#disclaimer').text('Change Profile')#}
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+     }
+    </script>
+{% endblock script %}

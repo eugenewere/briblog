@@ -1,0 +1,243 @@
+{% extends 'bnews/layout.html' %}
+{% load static %}
+    {% block links %}
+
+    {% endblock links %}
+{% block content %}
+     <!-- Start page content -->
+        <section id="page-content" class="page-wrapper">
+        <!-- Start Products Details-->
+        <div class="zm-section bg-white pt-40 pb-70 ">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-md-5">
+                        <div class="section-title-2 mb-40">
+                            <h3 class="inline-block uppercase">Create Your Account</h3>
+                            <p>Enter details to sign up</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                 <div class="col-md-12" >
+                         <div id="error_div" style="display:none;">
+                                <div class="alert alert-danger alert-dismissable">
+                                    <h4>Please fix the following errors</h4>
+                                    <ul id="errorlist" >
+
+
+                                    </ul>
+                                </div>
+                         </div>
+                    </div>
+                </div>
+                <div class="registation-form-wrap">
+                    <form id="registerform" action="{% url 'BLOG:makeregister' %}" enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="">Upload Picture</label>
+                                <label for="profile_image" style="display: flex; justify-content:center; flex-direction: column;align-items: center; width: 300px; height: 300px;">
+                                    <img class="blah" src="{% static 'front/images/download.png' %}" alt="">
+                                </label>
+                                <input required style="position: relative; display: none" onchange="readURL(this)" type="file"
+                                       name="profile_image" id="profile_image" class="inputfile"/>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="single-input">
+                                    <label>First Name <span style="color: red;">*</span></label>
+                                    <input required name="first_name" placeholder="First Name" type="text">
+                                </div>
+                               <div class="single-input">
+                                    <label>Email <span style="color: red;">*</span></label>
+                                    <input required name="email" placeholder="Email" type="text">
+                               </div>
+                               <div class="single-input">
+                                    <label>County <span style="color: red;">*</span></label>
+                                    <select required name="county" id="">
+                                       <option >Choose county</option>
+                                        {% for county in counties %}
+                                           <option value="{{ county.id }}">{{ county.county|title }}</option>
+                                        {% endfor %}
+                                   </select>
+                               </div>
+                                <div class="single-input">
+                                    <label>Phone Number <span style="color: red;">*</span></label>
+                                    <input required name="phone_number" placeholder="Phone Number" type="text">
+                               </div>
+
+                                  <div class="single-input">
+                                    <label>Password <span style="color: red;">*</span></label>
+                                    <input required name="password2" placeholder="Password" type="password">
+                                </div>
+
+
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="single-input">
+                                    <label>Last Name <span style="color: red;">*</span></label>
+                                    <input required name="last_name" placeholder="Last Name" type="text">
+                                </div>
+                                <div class="single-input">
+                                    <label>Username <span style="color: red;">*</span></label>
+                                    <input  required name="username" placeholder="Username" type="text">
+                                </div>
+                                <div class="single-input">
+                                    <label>Date Of Birth <span style="color: red;">*</span></label>
+                                    <input required name="date_of_birth" placeholder="Date Of Birth" type="date">
+                               </div>
+                               <div class="single-input">
+                                    <label>Gender <span style="color: red;">*</span></label>
+                                   <select required name="gender" id="">
+                                       <option >Choose gender</option>
+                                       <option value="male">Male</option>
+                                       <option value="female">Female</option>
+                                   </select>
+{#                                    <input name="email" placeholder="Email" type="text">#}
+                               </div>
+                               <div class="single-input">
+                                    <label>Confirm Password <span style="color: red;">*</span></label>
+                                    <input required name="password1" placeholder="Confirm Password" type="password">
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="single-input">
+                                    <label>Biography</label> <br>
+                                    <textarea name="biography" id="bio" cols="30" rows="10"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                <div class="single-input">
+                                    <label>NewsLetter</label> <br>
+                                    <input name="newsletter" value="1" class="remember" type="checkbox">Subscribe to our NewsLetter
+                                    <button  class="submit-button mt-20 inline-block" type="submit">Sign up</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row " style="padding: 30px 0;">
+                            <div class="col-sm-12 col-md-12 col-lg-6">
+                                <a style="width: 100% !important; text-align: center;" class="fb connect" href="{% url 'social:begin' 'facebook' %}">Register with Facebook</a>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- End Products Details -->
+    </section>
+     <!-- End page content -->
+{% endblock content %}
+{% block script %}
+    <script>
+        ClassicEditor
+            .create( document.querySelector( '#bio' ),{
+                 removePlugins: [  'Image','Table','Media','Image' ],
+                 alignment: {
+                        options: [ 'left', 'right' ]
+                    },
+                        toolbar: {
+                        items: [
+                          'heading',
+                          '|',
+                          'bold',
+                          'italic',
+                          '|',
+                          'bulletedList',
+                          'numberedList',
+                          '|',
+                          'undo',
+                          'redo',
+                             '|',
+                            'alignment',
+                        ]
+                      },
+            } )
+            .then( editor => {
+                    console.log( editor );
+            } )
+            .catch( error => {
+                    console.error( error );
+            } );
+        function readURL(input) {
+
+        if (input.files && input.files[0]) {
+         var reader = new FileReader();
+         // var disclaimer= document.getElementById("");
+            reader.onload = function (element) {
+                $('.blah').attr('src', element.target.result);
+                {#$('#disclaimer').text('Change Profile')#}
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+     }
+        $(document).ready(function(){
+           {#var spinner = $('#signuploader');#}
+           $("#registerform").submit(function(e){
+               {#console.log('thiss');#}
+                e.preventDefault();
+                {#spinner.show();#}
+                var new_form_data = new FormData(this);
+
+                setTimeout(
+                    $.ajax({
+                    method : 'POST',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    data : new_form_data,
+                    enctype: 'multipart/form-data',
+                    url :  $("#registerform").attr('action'),
+                    success : function(response){
+                        {#spinner.hide();#}
+                        if (response.results === 'success') {
+                             $('#error_div').fadeOut()
+                            $("#registerform")[0].reset();
+                            swal.fire({
+                                title: "Success!",
+                                text: response.success,
+                                type: "success",
+                                confirmButtonText: "Continue",
+                            });
+                            setTimeout(function () {
+                                window.location = window.location.origin;
+                            }, 3000)
+                         }
+                        else {
+                            var resp = response['form']
+                            let k = JSON.stringify(resp)
+                            let str = JSON.parse(resp)
+                            for (var key in str) {
+                              if (str.hasOwnProperty(key)) {
+                                $('#errorlist').append(
+                                    '<li class="text-capitalize">'+
+                                       '<span>'+ key +'</span>'+
+                                       ' <a href="#" class="error">'+
+                                          str[key][0]['message']+
+                                       '</a>'+
+                                    '</li>'
+                                )
+                              }
+                            }
+                            $('#error_div').show();
+                            setTimeout(function () {
+                                swal.fire({
+                                    title: "Error!",
+                                    text: "Form Is Invalid. Please fix the below errors",
+                                    type: "error",
+                                    confirmButtonText: "Retry"
+                                });
+                            },2000);
+                         }
+                    },
+                    error : function(response){
+                        console.log(response);
+                        {#spinner.hide();#}
+
+                    }
+                }),3000);
+           });
+        });
+    </script>
+{% endblock script %}

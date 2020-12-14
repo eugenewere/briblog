@@ -27,9 +27,10 @@ def getCounties():
             # print(p['county_number'], p['county'])
 
 def home(request):
-    # getCounties()
+    posts = Post.objects.order_by('-created_at')
     context = {
         'title': 'Home',
+        'allposts':posts,
     }
     return render(request, 'bnews/index.html', context)
 

@@ -64,3 +64,13 @@ class BloggerForm(forms.Form, UserCreationForm):
         if (dob.year + userAge, dob.month, dob.day) > (today.year, today.month, today.day):
             raise forms.ValidationError('Users must be aged 18 years old and above.'.format(userAge))
         return dob
+
+class PostForm(forms.Form):
+    class Meta:
+        model = Post
+        fields = [
+            'category',
+            'description',
+            'title',
+            'post_image'
+        ]

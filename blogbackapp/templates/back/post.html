@@ -1,6 +1,7 @@
 {% extends 'back/layout.html' %}
 {% load static %}
 {% load humanize %}
+{% load hitcount_tags %}
 {% block link %}
 
 {% endblock link %}
@@ -76,52 +77,73 @@
                                     </select>
                                 </div>
 
-                               <button type="submit" class="btn btn-success">Save </button>
+                               <button onClick="saveMyEditor()" type="submit" class="btn btn-success">Save </button>
                             </form>
                           </div>
 
                         </div>
                       </div>
                     </div>
-                    {% for category in categories %}
-                        <div class="modal fade" id="editexampleModalLabel{{ category.id }}" tabindex="-1" aria-labelledby="editexampleModalLabel{{ category.id }}" aria-hidden="true">
-                          <div class="modal-dialog">
+                    {% for post in myposts %}
+                        <div class="modal fade" id="editexampleModalLabel{{ post.id }}" tabindex="-1" aria-labelledby="editexampleModalLabel{{ post.id }}" aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                               <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Edit Post</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                                 </button>
                               </div>
                               <div class="modal-body">
-                                 <form action="{% url 'BLOGBACK:editcategory' category.id %}" method="post">
-                                     {% csrf_token %}
-                                  <div class="form-group">
-                                    <label for="exampleInputEmail1{{ category.id }}">Category Name</label>
-                                    <input type="text" value="{{ category.category }}" name="category" class="form-control" id="exampleInputEmail1{{ category.id }}" aria-describedby="emailHelp">
-                                    <small id="emailHelp" class="form-text text-muted">Edit Category</small>
-                                  </div>
-        {#                          <button type="submit" class="btn btn-success">Submit</button>#}
-        {#                           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>#}
-                                   <button type="submit" class="btn btn-success">Save </button>
-                                </form>
-                              </div>
+                                 <form action="{% url 'BLOGBACK:edit_post' post.id %}" method="post" enctype="multipart/form-data">
+                                 {% csrf_token %}
+                                 {#post-images/Main-Banner1-1200x620.jpg#}
 
-                            </div>
-                          </div>
-                        </div>
-                        <div class="modal fade" id="deleteexampleModal{{ category.id }}" tabindex="-1" aria-labelledby="deleteexampleModalLabel{{ category.id }}" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Delete Category</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                                 <p>Are You Sure You Want to delete</p>
-                                  <a href="{% url 'BLOGBACK:deletecategory' category.id %}" class="btn-danger btn">Delete</a>
+                                 <div class="form-group">
+                                    <label for="">Upload Picture</label>
+                                    <label for="profile_image-{{ post.id }}" style="display: flex; justify-content:center; flex-direction: column;align-items: center; width: 100%; height: 400px; overflow:hidden;">
+                                        <img id="img{{ post.id }}" style="width: 100%; height: 100%; object-fit: cover;" class="blah2" src="{{ post.post_image.url }}" alt="">
+                                    </label>
+                                    <input value="{{ post.post_image }}" style="position: relative; display: none" type="file"
+                                           name="post_imageb" id="profile_image-{{ post.id }}" class="inputfile2"/>
+                                 </div>
+                                  <div class="form-group">
+                                    <label for="exampleInputEmail1{{ post.id }}">Posts Title</label>
+                                    <input value="{{ post.title }}" type="text" name="title" class="form-control" id="exampleInputEmail1{{ post.id }}" aria-describedby="emailHelp">
+                                    <small id="emailHelp" class="form-text text-muted">Add Title</small>
+                                  </div>
+                                 <div class=" form-group  " style="padding: 0;">
+                                    <label for="{{ post.id }}kes">Category</label> <br>
+                                    <select id="{{ post.id }}kes" class="selectpicker" name="category">
+                                        {% for c in categories %}
+                                            <option {% if post.category.id == c.id %} selected {% endif %} value="{{ c.id }}">{{ c.category }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                 <div class="form-group">
+                                    <div class="form-group">
+                                        <label for="{{ post.id }}ie">Description</label> <br>
+                                        <textarea id="{{ post.id }}ie"  name="description" class="form-control bio_post" >{{ post.description }}</textarea>
+                                    </div>
+                                </div>
+                                <h5 class="card-title">Other</h5>
+                                <div class="card-body border-top">
+                                    <label for="{{ post.id }}tags" class="card-title">Multiple Category Tags</label>
+                                    <select id="{{ post.id }}tags" class="selectpicker" name="category[]" multiple>
+                                        {% for c in categories %}
+                                            <option
+                                                    {% for tag in post.post_tag %}
+                                                        {% if c.id == tag.category.id %}
+                                                          selected
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    value="{{ c.id }}">{{ c.category }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                               <button type="submit" class="btn btn-success">Save </button>
+                            </form>
                               </div>
 
                             </div>
@@ -139,20 +161,39 @@
                                              <thead>
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Img</th>
+                                                    <th scope="col">Title</th>
+                                                    <th scope="col">Category</th>
+                                                    <th style="width: 200px;" scope="col">Tags</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Hit Count</th>
                                                     <th scope="col">Created_at</th>
                                                     <th scope="col">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {% for category in categories %}
+                                                {% for post in myposts %}
                                                 <tr>
                                                     <th scope="row">{{forloop.counter}}</th>
-                                                    <td>{{category.category|title}}</td>
-                                                    <td>{{category.created_at|date:'d-M-Y'}}</td>
                                                     <td>
-                                                        <a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ category.id }}" class="btn btn-success btn-sm rounded">Edit</a>
-                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ category.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+                                                        <div style="width: 100px; height: 100px; border-radius: 10px; overflow: hidden">
+                                                            <img loading="lazy" style="width: 100%; height: 100%; object-fit: contain" src="{{ post.post_image.url }}" alt="">
+                                                        </div>
+                                                    </td>
+                                                    <td>{{post.title|title}}</td>
+                                                    <td>{{post.category.category}}</td>
+                                                    <td>
+                                                        {% for tag in post.post_tag %}
+                                                          <span style="padding: 5px 9px; border-radius: 10px; margin: 10px 3px; background-color: #d9d4d4; ">{{ tag.category.category|title }}</span>
+                                                        {% endfor %}
+                                                    </td>
+                                                    <td><span style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">{{post.post_verify}}</span></td>
+                                                    <td>{% get_hit_count for  post %}</td>
+                                                    <td>{{post.created_at|naturaltime}}</td>
+                                                    <td>
+                                                        <a href="" data-toggle="modal" data-target="#viewexampleModalLabel{{ post.id }}" class="btn btn-info btn-sm rounded">View</a>
+                                                        <a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ post.id }}" class="btn btn-success btn-sm rounded">Edit</a>
+                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -262,20 +303,63 @@
                                              <thead>
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Img</th>
+                                                    <th scope="col">Title</th>
+                                                    <th scope="col">Category</th>
+                                                    <th style="width: 200px;" scope="col">Tags</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Hit Count</th>
                                                     <th scope="col">Created_at</th>
                                                     <th scope="col">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {% for category in categories %}
+                                                {% for post in allposts %}
+                                                <div class="modal fade" id="deleteexampleModal{{ post.id }}" tabindex="-1" aria-labelledby="deleteexampleModalLabel{{ post.id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete Post</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <p>Are You Sure You Want to delete</p>
+                                  <a href="{% url 'BLOGBACK:post_delete' post.id %}" class="btn-danger btn">Delete</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
                                                 <tr>
                                                     <th scope="row">{{forloop.counter}}</th>
-                                                    <td>{{category.category|title}}</td>
-                                                    <td>{{category.created_at|date:'d-M-Y'}}</td>
                                                     <td>
-                                                        <a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ category.id }}" class="btn btn-success btn-sm rounded">Edit</a>
-                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ category.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+                                                        <div style="width: 100px; height: 100px; border-radius: 10px; overflow: hidden">
+                                                            <img loading="lazy" style="width: 100%; height: 100%; object-fit: contain" src="{{ post.post_image.url }}" alt="">
+                                                        </div>
+                                                    </td>
+                                                    <td>{{post.title|title}}</td>
+                                                    <td>{{post.category.category}}</td>
+                                                    <td>
+                                                        {% for tag in post.post_tag %}
+                                                          <span style="padding: 5px 9px; border-radius: 10px; margin: 10px 3px; background-color: #d9d4d4; ">{{ tag.category.category|title }}</span>
+                                                        {% endfor %}
+                                                    </td>
+                                                    <td>
+                                                        <a class="change-status" data-post-id="{{ post.id }}" data-post-status="{{post.post_verify}}" href="">
+                                                            <span  style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">
+                                                                {{post.post_verify|title }}
+                                                            </span>
+                                                        </a>
+                                                    </td>
+                                                    <td>{% get_hit_count for  post %}</td>
+                                                    <td>{{post.created_at|naturaltime}}</td>
+                                                    <td>
+                                                        <a href="" data-toggle="modal" data-target="#viewexampleModalLabel{{ post.id }}" class="btn btn-info btn-sm rounded">View</a>
+                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+                                                        {#<a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ post.id }}" class="btn btn-success btn-sm rounded">Edit</a>#}
+{#                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>#}
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -315,17 +399,102 @@
 {% endblock content %}
 {% block script %}
     <script>
-        function readURL(input) {
-
+    $(document).ready(function () {
+        $('.inputfile2').each(function (e) {
+            $(this).change(function (e) {
+                var inputt = $(this).parent().find('img').attr('id');
+                 if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (element) {
+                        $('#'+inputt).attr('src', element.target.result);
+                        {#console.log(element.target.result);#}
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                    {#console.log(reader);#}
+                }
+            });
+        });
+        var allEditors = document.querySelectorAll('.bio_post');
+        for (var i = 0; i < allEditors.length; ++i) {
+          ClassicEditor.create(allEditors[i],{
+              removePlugins: [ 'Insert image', 'Insert media', 'Title' ],
+              toolbar: [
+                         'heading',
+                         'Paragraph',
+                         'Highlight',
+                         'bold',
+                         'italic',
+                         'FontFamily',
+                         'FontSize',
+                         'FontColor',
+                         'FontBackgroundColor',
+                         'Indent',
+                         'IndentBlock',
+                         'TextTransformation',
+                         'blockQuote',
+                         'Autoformat',
+                         'undo',
+                         'redo',
+                         'link',
+                         'bulletedList',
+                         'Alignment',
+                         'Code',
+                         'Codeblock',
+                         'Highlight',
+                         'Horizontalline',
+                         'MathType',
+                         'Markdown',
+                         'Mention',
+                         'Page break',
+                         'Media embed toolbar',
+                         'Special characters',
+                         'Standard editing mode',
+                         'Strikethrough',
+                         'Subscript',
+                         'Superscript',
+                         'Underline',
+                         'Word count',
+                         'numberedList'],
+          });
+        }
+        $('.change-status').each(function (e) {
+            $(this).click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-post-id');
+                var status = $(this).attr('data-post-status');
+                var loca = "{% url 'BLOGBACK:edit_post_status' %}";
+                var element = $(this);
+                var data = {
+                    id: id,
+                    status: status,
+                  };
+                $.post(loca, data, function(data, status){
+                    if ( data['status'] === 'ACTIVE'){
+                        $(element).children('span').css('background-color','green');
+                        $(element).children('span').text('Active');
+                    }
+                    else if(data['status'] === 'INACTIVE'){
+                        $(element).children('span').css('background-color','red');
+                        $(element).children('span').text('Inactive');
+                    }
+                  });
+            });
+        });
+    })
+    function readURL(input) {
         if (input.files && input.files[0]) {
          var reader = new FileReader();
-         // var disclaimer= document.getElementById("");
-            reader.onload = function (element) {
-                $('.blah').attr('src', element.target.result);
-                {#$('#disclaimer').text('Change Profile')#}
-            };
-            reader.readAsDataURL(input.files[0]);
+         reader.onload = function (element) {
+            $('.blah').attr('src', element.target.result);
+             {#console.log(element.target.result);#}
+        };
+         reader.readAsDataURL(input.files[0]);
+         {#console.log(reader);#}
         }
      }
+
+
+
+
     </script>
 {% endblock script %}

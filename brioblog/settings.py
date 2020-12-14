@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'hitcount',
+    'ckeditor',
+    'djrichtextfield',
     'social_django',
     'sweetify',
 

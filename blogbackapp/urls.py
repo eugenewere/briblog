@@ -17,4 +17,10 @@ urlpatterns = [
     path('bloggers_group_status/<int:blogger_id>', views.bloggers_group_status, name='bloggers_group_status'),
     path('bloggers_active_status/<int:blogger_id>', views.bloggers_active_status, name='bloggers_active_status'),
     path('bloggers_delete/<int:blogger_id>', views.bloggers_delete, name='bloggers_delete'),
+
+    path('post_delete/<int:post_id>', views.post_delete, name='post_delete'),
+    path('editpost/<int:post_id>', views.edit_post, name='edit_post'),
+
+
+    path('edit_status/', views.edit_post_status, name='edit_post_status'),
 ]

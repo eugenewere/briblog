@@ -1,15 +1,23 @@
 import sweetify
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 
 from blogbackapp.models import *
 
 
 
 # Create your views here.
+from blogfrontapp.forms import *
+
+
 @login_required
 def home(request):
-    return render(request,'back/index.html')
+    context={
+        'mainpage':'mainpage',
+    }
+    return render(request,'back/index.html', context)
 
 @login_required
 def category(request):
@@ -64,7 +72,8 @@ def posts(request):
     c = Category.objects.order_by("-created_at").all()
 
     context={
-        'posts':Post.objects.filter(blogger=b).all(),
+        'myposts':Post.objects.filter(blogger=b).order_by('-created_at'),
+        'allposts':Post.objects.order_by('-created_at'),
         'blogger': b,
         'categories':c,
     }
@@ -118,10 +127,11 @@ def addposts(request):
         blogger = Blogger.objects.filter(user_ptr_id = user.id).first()
         category = request.POST.get('category')
         category_list = request.POST.getlist('category[]')
-        description = request.POST.get('description')
+        description = request.POST['description']
         post_image = request.FILES.get('post_image')
         title = request.POST.get('title')
         # print(blogger,category, category_list,description,post_image,title)
+        print(post_image)
         cat = Category.objects.filter(id=category).first()
         p = Post.objects.create(
             blogger=blogger,
@@ -130,16 +140,92 @@ def addposts(request):
             description=description,
             title=title
         )
-        # if p and category_list:
-        #     for cat in category_list:
-        #         categ = Category.objects.filter(id=cat).first()
-        #         PostTags.objects.create(
-        #             category=categ,
-        #             post=p,
-        #         )
+        if p and category_list:
+            for cat in category_list:
+                categ = Category.objects.filter(id=cat).first()
+                PostTags.objects.create(
+                    category=categ,
+                    post=p,
+                )
 
 
         sweetify.success(request, 'Success', text='Post Added', persistent='Ok')
     else:
         sweetify.success(request, 'Error', text='Post not Deleted', persistent='Try Again')
     return redirect('BLOGBACK:posts')
+
+
+def post_delete(request, post_id):
+    b  = Post.objects.filter(id=post_id).first()
+    if b:
+        b.post_image.delete()
+        b.delete()
+        sweetify.success(request, 'Success', text='Post Deleted', persistent='Ok')
+    else:
+        sweetify.success(request, 'Error', text='Post not Deleted', persistent='Try Again')
+    return redirect('BLOGBACK:posts')
+
+
+def edit_post(request, post_id):
+    b  = Post.objects.filter(id=post_id).first()
+    if request.method == 'POST':
+        # user = request.user
+        # blogger = Blogger.objects.filter(user_ptr_id = user.id).first()
+        category = request.POST.get('category')
+        category_list = request.POST.getlist('category[]')
+        description = request.POST.get('description')
+        post_image = request.FILES['post_imageb']
+        title = request.POST.get('title')
+        print(post_image)
+        # print(blogger,category, category_list,description,post_image,title)
+        cat = Category.objects.filter(id=category).first()
+        # p = PostForm(request.FILES, request.FILES)
+        p = Post.objects.filter(id=b.id).update(
+            # post_image='post_image/'+str(post_image),
+            category=cat,
+            description=description,
+            title=title,
+            post_image=post_image,
+        )
+        if p and category_list:
+            for cat in category_list:
+                categ = Category.objects.filter(id=cat).first()
+                if PostTags.objects.filter(post=b, category=categ).exists():
+                    pt = PostTags.objects.filter(post=b, category=categ).first()
+                    PostTags.objects.filter(id=pt.id).update(
+                        category=categ,
+                        post=b,
+                    )
+                else:
+                    PostTags.objects.create(
+                        category=categ,
+                        post=b,
+                    )
+
+        sweetify.success(request, 'Success', text='Post Updated', persistent='Ok')
+    else:
+        sweetify.success(request, 'Error', text='Post not Updated', persistent='Try Again')
+    return redirect('BLOGBACK:posts')
+
+@csrf_exempt
+def edit_post_status(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        # status = request.POST.get('status')
+        if Post.objects.filter(id=id, post_verify='INACTIVE'):
+            Post.objects.filter(id=id).update(
+                post_verify='ACTIVE'
+            )
+            context={
+                'status':"ACTIVE"
+            }
+        else:
+            Post.objects.filter(id=id).update(
+                post_verify='INACTIVE'
+            )
+            context = {
+                'status': "INACTIVE"
+            }
+
+        return JsonResponse(context)
+

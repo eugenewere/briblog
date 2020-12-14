@@ -372,7 +372,9 @@
     <script src="{% static 'back/assets/vendor/charts/c3charts/c3.min.js' %}"></script>
     <script src="{% static 'back/assets/vendor/charts/c3charts/d3-5.4.0.min.js' %}"></script>
     <script src="{% static 'back/assets/vendor/charts/c3charts/C3chartjs.js' %}"></script>
+    {% if mainpage %}
     <script src="{% static 'back/assets/libs/js/dashboard-ecommerce.js' %}"></script>
+    {% endif %}
     <script src="{% static 'back/assets/vendor/bootstrap-select/js/bootstrap-select.js' %}"></script>
 {#    <script src="../assets/vendor/bootstrap-select/js/bootstrap-select.js"></script>#}
     <script src="{% static 'back/dtables.js' %}"></script>
@@ -381,8 +383,8 @@
             $('#myTable').DataTable();
             $('#myTable1').DataTable();
         } );
-        ClassicEditor
-           .create( document.querySelector( '#bio' ),{
+        var editor = ClassicEditor
+          .create( document.querySelector( '#bio' ),{
                 {#removePlugins: [  'Image','Media' ],#}
                 removePlugins: [ 'Insert image', 'Insert media', 'Title' ],
                 toolbar: [
@@ -424,11 +426,28 @@
                      'numberedList'],
            })
           .then( editor => {
-                    console.log( editor );
+
             } )
           .catch( error => {
-                    console.error( error );
+
             } );
+
+        var isSourceOn = false;
+
+        function saveMyEditor() {
+          if(isSourceOn)
+            CKEDITOR.tools.callFunction(52, this);
+        }
+
+        editor.on('instanceReady', function( event ){
+          editor.on( 'mode', function( evt ){
+            if(editor.mode !== 'source') {
+              isSourceOn = false;
+            } else {
+              isSourceOn = true;
+            }
+          });
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>

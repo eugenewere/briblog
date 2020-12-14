@@ -12,7 +12,8 @@ from io import BytesIO
 from PIL import Image
 # from wagtail.admin.edit_handlers import FieldPanel, RichTextField
 from django.core.files import File
-
+from ckeditor.fields import RichTextField
+# from djrichtextfield.models import RichTextField
 # # Create your models here.
 from django.db.models import Count, Q
 from django.utils.safestring import mark_safe
@@ -91,7 +92,7 @@ class Post(models.Model):
     blogger = models.ForeignKey(Blogger, on_delete=models.CASCADE)
     title = models.CharField(max_length=200, null=False, blank=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=False, blank=False)
-    description = models.TextField()
+    description = RichTextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     slug = models.SlugField(default='', editable=False, max_length=160)
@@ -107,15 +108,26 @@ class Post(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = slugify((self.title.lower()).replace(" ", "-"))
+
         super(Post, self).save(*args, **kwargs)
-        value = self.title
-        self.slug = slugify(value, allow_unicode=True)
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     super(Post, self).save(*args, **kwargs)
+    #     value = self.title
+    #     self.slug = slugify(value, allow_unicode=True)
+    #     super().save(*args, **kwargs)
+
 
     def img_save(self, *args, **kwargs):
         new_image = compress(self.post_image)
         self.post_image = new_image
         super().save(*args, **kwargs)
+
+    @property
+    def post_tag(self):
+        # print(PostTags.objects.filter(post=self).all())
+        return PostTags.objects.filter(post=self).all()
 
 
 class PostTags(models.Model):

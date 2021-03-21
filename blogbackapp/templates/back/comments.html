@@ -1,0 +1,333 @@
+{% extends 'back/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+{% load templatetag %}
+{% block links %}
+
+    <style>
+
+    .form-comm{
+        height: 0 !important;
+        overflow: hidden;
+    }
+    .form-comm.active{
+        height: auto !important;
+        overflow: visible;
+    }
+    </style>
+{% endblock links %}
+{% block content %}
+    <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <!-- ============================================================== -->
+                <!-- pageheader -->
+                <!-- ============================================================== -->
+
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="page-header">
+                                <h2 class="pageheader-title"> Commented Posts </h2>
+                                <p class="pageheader-text">Verify and Delete.</p>
+                                <div class="page-breadcrumb">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="{% url 'BLOGBACK:home' %}" class="breadcrumb-link">Dashboard</a></li>
+                                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Commented Posts </a></li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% for post in allposts %}
+                        <div class="modal fade" id="viewexampleModalLabel{{ post.id }}" tabindex="-1" aria-labelledby="viewexampleModalLabel{{ post.id }}" aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">{{ post.title|title }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <div class="container-fluid p-0">
+                                     <div class="col-sm-12 p-0">
+                                        {% for comment in post.getPrimaryComments %}
+                                            <div class="media">
+                                                <img class="mr-3 user-avatar-lg rounded" src="{{ comment.blogger.profile_image.url }}" alt="Generic placeholder image">
+                                                <div class="media-body">
+                                                    <h5 class="mt-0">{{ comment.blogger.first_name|title }} {{ comment.blogger.last_name|title }}</h5>
+                                                    {{ comment.msg_content|safe|escape }}
+                                                    {% if not request.user.is_superuser %}
+                                                        <div class="media-body">
+                                                        <form action="{% url 'BLOG:comment' comment.post.id %}" method="POST">
+                                                            <span class="badge dropcomment badge-primary ">
+                                                                <i class="fa fa-caret-down"></i>
+                                                            </span>
+                                                            <div class="form-comm clearfix pb-2">
+                                                                <div class="clearfix pb-2"  >
+                                                                    {% csrf_token %}
+                                                                    <div class="single-input">
+                                                                        <textarea  class="ck1 textarea" id="myeditor-{{ comment.id }}" name="msg_content" placeholder="Type your comment..."></textarea>
+                                                                    </div>
+                                                                </div>
+                                                               <button class="btn btn-success" type="submit">Submit Comment</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% for c in comment.getSecondaryComments %}
+                                                        <div class="media mt-3">
+                                                            <a class="pr-3" href="#"><img class="mr-2 user-avatar-lg rounded" src="{{ c.blogger.profile_image.url }}" alt="Generic placeholder image"></a>
+                                                            <div class="media-body">
+                                                                <h5 class="mt-0">{{ c.blogger.first_name|title }} {{ c.blogger.last_name|title }}</h5>
+                                                                {{ c.msg_content|safe|escape }}
+                                                                {% if not request.user.is_superuser %}
+                                                                <div class="media-body">
+                                                                <form action="{% url 'BLOG:comment' c.post.id %}" method="POST">
+                                                                    <span class="badge dropcomment badge-primary ">
+                                                                        <i class="fa fa-caret-down"></i>
+                                                                    </span>
+                                                                    <div class="form-comm clearfix pb-2">
+                                                                        <div class="clearfix pb-2"  >
+                                                                            {% csrf_token %}
+                                                                            <div class="single-input">
+                                                                                <textarea  class="ck1 textarea" id="myeditor-{{ c.id }}" name="msg_content" placeholder="Type your comment..."></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                       <button class="btn btn-success" type="submit">Submit Comment</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                     </div>
+                                 </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                           <div class="card">
+                            <h5 class="card-header">Commented Posts</h5>
+                            <div class="card-body">
+{#                                <button class="btn btn-success my-3" data-toggle="modal" data-target="#exampleModal">Add</button>#}
+                                <div class="table-responsive">
+                                    <table id="myTable" class="table table-striped table-bordered first">
+                                         <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Img</th>
+                                                <th scope="col">Title</th>
+                                                <th scope="col">Category</th>
+{#                                                <th style="width: 200px;" scope="col">Tags</th>#}
+{#                                                <th scope="col">Status</th>#}
+{#                                                <th scope="col">Hit Count</th>#}
+                                                <th scope="col">Last Commented</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for post, comment in mylist %}
+                                                <div class="modal fade" id="deleteexampleModal{{ post.id }}" tabindex="-1" aria-labelledby="deleteexampleModalLabel{{ post.id }}" aria-hidden="true">
+                                                      <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                          <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Delete Post</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                              <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                          </div>
+                                                          <div class="modal-body">
+                                                             <p>Are You Sure You Want to delete</p>
+                                                              <a href="{% url 'BLOGBACK:post_delete' post.id %}" class="btn-danger btn">Delete</a>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                <tr>
+                                                <th scope="row">{{forloop.counter}}</th>
+                                                <td>
+                                                    <div style="width: 100px; height: 100px; border-radius: 10px; overflow: hidden">
+                                                        <img loading="lazy" style="width: 100%; height: 100%; object-fit: contain" src="{{ post.post_image.url }}" alt="">
+                                                    </div>
+                                                </td>
+                                                <td>{{post.title|title}}</td>
+                                                <td>{{post.category.category}}</td>
+{#                                                <td>#}
+{#                                                    {% for tag in post.post_tag %}#}
+{#                                                      <span style="padding: 5px 9px; border-radius: 10px; margin: 10px 3px; background-color: #d9d4d4; ">{{ tag.category.category|title }}</span>#}
+{#                                                    {% endfor %}#}
+{#                                                </td>#}
+{#                                                <td>#}
+{#                                                    <a class="change-status" data-post-id="{{ post.id }}" data-post-status="{{post.post_verify}}" href="">#}
+{#                                                        <span  style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">#}
+{#                                                            {{post.post_verify|title }}#}
+{#                                                        </span>#}
+{#                                                    </a>#}
+{#                                                </td>#}
+{#                                                <td>{% get_hit_count for  post %}</td>#}
+                                                <td>{{comment.created_at|naturaltime}}</td>
+                                                <td>
+                                                    <a href="" data-toggle="modal" data-target="#viewexampleModalLabel{{ post.id }}" class="btn btn-info btn-sm rounded">View</a>
+                                                    <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+                                                    {#<a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ post.id }}" class="btn btn-success btn-sm rounded">Edit</a>#}
+{#                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>#}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+            </div>
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <div class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                            Copyright ©
+                            <script>let d = new Date(); document.write(d.getFullYear())</script> Concept. All rights reserved. Dashboard by .
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- end footer -->
+            <!-- ============================================================== -->
+        </div>
+{% endblock content %}
+{% block script %}
+    <script>
+    $(document).ready(function () {
+        $('.change-status').each(function (e) {
+            $(this).click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-post-id');
+                var status = $(this).attr('data-post-status');
+                var loca = "{% url 'BLOGBACK:edit_post_status' %}";
+                var element = $(this);
+                var data = {
+                    id: id,
+                    status: status,
+                  };
+                $.post(loca, data, function(data, status){
+                    if ( data['status'] === 'ACTIVE'){
+                        $(element).children('span').css('background-color','green');
+                        $(element).children('span').text('Active');
+                    }
+                    else if(data['status'] === 'INACTIVE'){
+                        $(element).children('span').css('background-color','red');
+                        $(element).children('span').text('Inactive');
+                    }
+                  });
+            });
+        });
+        $('.change-editor').each(function (e) {
+            $(this).click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-editor-id');
+                {#var status = $(this).attr('data-post-status');#}
+                var loca = "{% url 'BLOGBACK:add_edutorial_pick' %}";
+                var element = $(this);
+                var data = {id: id,};
+                $.post(loca, data, function(data, status){
+                    if ( data['status'] === 'ACTIVE'){
+                        $(element).removeClass('badge-primary').addClass('badge-success')
+                        $(element).text('Editors Choice');
+                    }
+                    else if(data['status'] === 'INACTIVE'){
+                         $(element).removeClass('badge-success').addClass('badge-primary')
+                        $(element).text('Add To Editors Pick');
+                    }
+                  });
+            });
+        });
+        $('.ck1').each(function () {
+            let id = $(this).attr('id');
+             let editor= ClassicEditor
+              .create( document.querySelector( '#'+id ),{
+                    {#removePlugins: [  'Image','Media' ],#}
+                    removePlugins: [ 'Insert image', 'Insert media', 'Title' ],
+                    toolbar: [
+                         'heading',
+                         'Paragraph',
+                         'Highlight',
+                         'bold',
+                         'italic',
+                         'FontFamily',
+                         'FontSize',
+                         'FontColor',
+                         'FontBackgroundColor',
+                         'Indent',
+                         'IndentBlock',
+                         'TextTransformation',
+                         'blockQuote',
+                         'Autoformat',
+                         'undo',
+                         'redo',
+                         'link',
+                         'bulletedList',
+                         'Alignment',
+                         'Code',
+                         'Codeblock',
+                         'Highlight',
+                         'Horizontalline',
+                         'MathType',
+                         'Markdown',
+                         'Mention',
+                         'Page break',
+                         'Media embed toolbar',
+                         'Special characters',
+                         'Standard editing mode',
+                         'Strikethrough',
+                         'Subscript',
+                         'Superscript',
+                         'Underline',
+                         'Word count',
+                         'numberedList'],
+               })
+              .then( editor => {
+                  {#editor.ui.view.editable.editableElement.style.height = '50px';#}
+
+                } )
+              .catch( error => {});
+        })
+        $('.dropcomment').each(function () {
+            $(this).click(function () {
+                 let form = $(this).closest('form')
+                 $(form).find('.form-comm').toggleClass('active')
+            })
+        })
+    })
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+         var reader = new FileReader();
+         reader.onload = function (element) {
+            $('.blah').attr('src', element.target.result);
+             {#console.log(element.target.result);#}
+        };
+         reader.readAsDataURL(input.files[0]);
+         {#console.log(reader);#}
+        }
+     }
+
+
+
+
+    </script>
+{% endblock script %}

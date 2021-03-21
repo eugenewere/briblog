@@ -1,0 +1,32 @@
+.my-page-numbers:not(:nth-child(3)){
+    padding: 5px;
+    margin: 3px;
+    background-color: #c4c4c4;
+    border-radius: 5px;
+    color: #050000;
+    font-weight: bolder;
+}
+.my-page-numbers:first-child{
+    border-bottom-left-radius: 5px !important;
+    border-bottom-right-radius: 0 !important;
+    border-top-left-radius: 5px !important;
+    border-top-right-radius: 0 !important;;
+}
+.my-page-numbers:last-child{
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 5px !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 5px !important;;
+}
+.my-page-numbers:nth-child(3) a{
+    padding: 11px;
+    margin: 9px 4px !important;
+    background-color: #c4c4c4;
+    color: #050000;
+    border-radius: 5px;
+    font-weight: bolder;
+}
+.my-page-numbers a.active{
+    background-color: #000000;
+    color: #f6f0f0;
+}

@@ -1,5 +1,265 @@
 {% extends 'bnews/layout.html' %}
 {% load static %}
+{% load humanize %}
+{% load templatetag %}
+{% block links %}
+   <link rel="stylesheet" href="{% static "front/css/core.css" %}">
+    <!-- Theme shortcodes/elements style -->
+    <link rel="stylesheet" href="{% static "front/css/shortcode/shortcodes.css" %}">
+    <!-- Theme main style -->
+    <link rel="stylesheet" href="{% static "front/style.css" %}">
+    <!-- Responsive css -->
+    <link rel="stylesheet" href="{% static "front/css/responsive.css" %}">
+    <!-- User style -->
+    <link rel="stylesheet" href="{% static "front/css/custom.css" %}">
+    <link rel="stylesheet" href="{% static "front/css/style-customizer.css" %}">
+    <link rel="stylesheet" href="{% static "front/css/OwlCarousel/owl.carousel.css" %}">
+    <link rel="stylesheet" href="{% static "front/css/OwlCarousel/owl.theme.default.min.css" %}">
+    <script src="https://kit.fontawesome.com/16d33ecbbb.js" crossorigin="anonymous"></script>
+
+    <style>
+        .owl-nav{
+            display: flex;
+            justify-content: flex-end;
+            flex-direction: row;
+        }
+      .owl-nav .owl-next i,.owl-nav .owl-prev i{
+            font-size: 24px;
+            font-weight: bolder;
+            margin: 10px;
+      }
+
+.containerr {
+  {#width: 600px;#}
+  {#height: auto;#}
+    margin: 10px 0;
+  display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.containerr h1 {
+  font-family: "Lato";
+  font-size: 3rem;
+  font-weight: 300;
+}
+.containerr h4 {
+  font-family: "Lato";
+  font-soze: 1.2rem;
+  padding-top: 40px;
+  color: #999;
+}
+.containerr .love {
+  font-size: 0.9rem;
+  color: #fd3030;
+}
+.containerr .wrapper {
+  {#padding-top: 50px;#}
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.containerr .wrapper .like-button {
+  position: relative;
+    /* width: 50px; */
+    /* height: 50px; */
+    {#/* border-radius: 50%; */#}
+    border-radius: 5px;
+    background: #696969;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    text-decoration: none;
+    overflow: hidden;
+    padding: 3px 25px;
+}
+.containerr .wrapper .like-button .like-overlay>span {
+    position: absolute;
+    color: #f6f4f4;
+    left: 48%;
+    top: 3.7px;
+    font-weight: 900;
+}
+.like_count{
+    padding-left: 10px;
+    color: black;
+    font-weight: bolder;
+}
+.containerr .wrapper .like-button .like-overlay {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  {#border-radius: 50%;#}
+  background: #fd3030;
+  transform: scale(0);
+  transition: all .9s;
+  z-index: 0;
+}
+.like_txt{
+    color: white !important;
+    padding-left: 3px;
+}
+.containerr .wrapper .like-button .like-overlay .like_txt{
+
+}
+.containerr .wrapper .like-button i.far {
+  display: block;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+}
+.containerr .wrapper .like-button i.fas {
+  display: none;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+}
+.containerr .wrapper .like-button.is-active .like-overlay {
+  transform: scale(1);
+}
+.containerr .wrapper .like-button.is-active i.far {
+  display: none;
+}
+.containerr .wrapper .like-button.is-active i.fas {
+  display: block;
+}
+
+
+
+        .containerr .wrapper .like-buttonn {
+  position: relative;
+    /* width: 50px; */
+    /* height: 50px; */
+    {#/* border-radius: 50%; */#}
+    border-radius: 5px;
+    background: #696969;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    text-decoration: none;
+    overflow: hidden;
+    padding: 3px 25px;
+}
+.containerr .wrapper .like-buttonn .like-overlay>span {
+    position: absolute;
+    color: #f6f4f4;
+    left: 48%;
+    top: 3.7px;
+    font-weight: 900;
+}
+.like_count{
+    padding-left: 10px;
+    color: black;
+    font-weight: bolder;
+}
+.containerr .wrapper .like-buttonn .like-overlay {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  {#border-radius: 50%;#}
+  background: #fd3030;
+  transform: scale(0);
+  transition: all .9s;
+  z-index: 0;
+}
+.like_txt{
+    color: white !important;
+    padding-left: 3px;
+}
+.containerr .wrapper .like-buttonn .like-overlay .like_txt{
+
+}
+.containerr .wrapper .like-buttonn i.far {
+  display: block;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+}
+.containerr .wrapper .like-buttonn i.fas {
+  display: none;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+}
+.containerr .wrapper .like-buttonn.is-active .like-overlay {
+  transform: scale(1);
+}
+.containerr .wrapper .like-buttonn.is-active i.far {
+  display: none;
+}
+.containerr .wrapper .like-buttonn.is-active i.fas {
+  display: block;
+}
+
+@-webkit-keyframes bouncy {
+  from, to {
+    -webkit-transform: scale(1, 1);
+  }
+  25% {
+    -webkit-transform: scale(0.9, 1.1);
+  }
+  50% {
+    -webkit-transform: scale(1.1, 0.9);
+  }
+  75% {
+    -webkit-transform: scale(0.95, 1.05);
+  }
+}
+@keyframes bouncy {
+  from, to {
+    transform: scale(1, 1);
+  }
+  25% {
+    transform: scale(0.9, 1.1);
+  }
+  50% {
+    transform: scale(1.1, 0.9);
+  }
+  75% {
+    transform: scale(0.95, 1.05);
+  }
+}
+.bouncy {
+  -webkit-animation: bouncy 0.6s;
+  animation: bouncy 0.6s;
+  -webkit-animation-duration: 0.6s;
+  animation-duration: 0.6s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.link-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #6dacff;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.4s;
+}
+.link-button img {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+.link-button:hover {
+  transform: scale(1.1) rotate(180deg);
+  background: #fd3030;
+}
+    </style>
+
+{% endblock links %}
 {% block content %}
         <!-- Start page content -->
         <div id="page-content" class="page-wrapper">
@@ -11,7 +271,7 @@
                             <div class="row mb-40">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div class="section-title">
-                                        <h2 class="h6 header-color inline-block uppercase">Popular News</h2>
+                                        <h2 class="h6 header-color inline-block uppercase">{{ post.category.category|title }}</h2>
                                     </div>
                                 </div>
                             </div>
@@ -19,59 +279,102 @@
                                 <!-- Start single post image formate-->
                                 <div class="col-md-12">
                                     <article class="zm-post-lay-single">
-                                        <div class="zm-post-thumb">
-                                            <a href="blog-single-image.html"><img src="../../../static/front/images/post/single/1.jpg" alt="img"></a>
+                                        <div class="zm-post-thumb" style="max-height: 500px; height: auto; overflow: hidden; border-radius: 10px; box-shadow: 4px 3px 10px black, -4px -3px 10px black; object-fit: cover;">
+                                            <a href="javascript:void(0);">
+                                                <img src="{{ post.post_image.url }}" alt="img">
+                                            </a>
                                         </div>
                                         <div class="zm-post-dis">
                                             <div class="zm-post-header">
-                                                <h2 class="zm-post-title h2"><a href="blog-single-image.html">Duis aute irure dolor in reprehenderit in velit esse cillumfugiat.</a></h2>
+                                                <h2 class="zm-post-title h2">
+                                                    <a href="javascript:void(0);">{{ post.title }}</a>
+
+                                                </h2>
                                                 <div class="zm-post-meta">
                                                     <ul>
-                                                        <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                        <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
+                                                        <li class="s-meta"><a href="#" class="zm-author">{{ post.blogger.first_name|title }} {{ post.blogger.last_name|title }}</a></li>
+                                                        <li class="s-meta"><a href="#" class="zm-date">{{ post.created_at|date:"M d, Y" }}</a></li>
+                                                        <li class="s-meta"><a href="#" class="zm-date"><i class="fa fa-eye text-success mr-2"></i> [{{ post.getHitcountOfPost|intcomma }}]</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
                                             <div class="zm-post-content">
-                                                <p>Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum. dolore eu fugiat nulla pariatur.</p>
-
-                                                <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
-
-                                                <blockquote>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</blockquote>
-
-                                                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-
-                                                <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+                                               {{ post.description|safe|escape }}
+                                            </div>
+                                            <div class="containerr">
+                                                 {% if request.user.is_authenticated %}
+                                                    <div class="wrapper likeaction" >
+                                                      <a href="javascript:void(0);" data-post-id="{{ post.id }}" class="like-buttonn {% if request.user.id|has_he_liked:post.id %}is-active{% endif %}">
+                                                        <i class="material-icons far fa-heart bouncy"></i>
+                                                        <i class="material-icons fas fa-heart bouncy"></i>
+                                                        <span class="like-overlay">
+                                                            <span>Liked</span>
+                                                        </span>
+                                                        <em class="like_txt">Like</em>
+                                                      </a>
+                                                     <span class="like_count">{{ post.likecount }}</span>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="wrapper">
+                                                      <a href="javascript:void(0);" data-toggle="modal" data-target="#loginexampleModal" class="like-button">
+                                                          <i class="material-icons far fa-heart bouncy"></i>
+                                                        <em class="like_txt">Like</em>
+                                                      </a>
+                                                     <span class="like_count">10</span>
+                                                  </div>
+                                                {% endif %}
+                                               <div class="wrapper" style="margin-left:20px; ">
+                                                  <a href="#postcomment" class="like-button">
+                                                    <span class="text-white" style="z-index: 999; color: white !important;">Comment</span>
+                                                    <span class="like-overlay"></span>
+                                                    <em class="like_txt"></em>
+                                                  </a>
+                                                 <span class="like_count">10</span>
+                                              </div>
 
                                             </div>
                                             <div class="entry-meta-small clearfix ptb-40 mtb-40 border-top border-bottom">
                                                 <div class="meta-list pull-left">
+                                                    {% if post.post_tag|length > 0 %}
                                                     <span class="post-title">Tags</span>
-                                                    <a href="#">Travel</a>,<a href="#">Nature</a>,<a href="#">Environment</a>,<a href="#">Entertainment</a>
+                                                        {% for post_tag in post.post_tag %}
+                                                            <span style="padding: 5px 9px; border-radius: 10px; margin: 10px 3px; background-color: #d9d4d4; ">{{ post.category.category }}</span>
+
+                                                        {% endfor %}
+                                                    {% endif %}
                                                 </div>
                                                 <div class="share-social-link pull-right">
-                                                    <a href="#"><i class="fa fa-facebook"></i></a>
-                                                    <a href="#"><i class="fa fa-twitter"></i></a>
-                                                    <a href="#"><i class="fa fa-google-plus"></i></a>
-                                                    <a href="#"><i class="fa fa-rss"></i></a>
-                                                    <a href="#"><i class="fa fa-dribbble"></i></a>
+                                                     {% if post.blogger.bloggerSocialMedia|length > 0 %}
+                                                        {% for post_blogger_social in post.blogger.bloggerSocialMedia %}
+                                                            <a href="{{post_blogger_social.name}}"><i class="{{ post_blogger_social.icon}}"></i></a>
+                                                        {% endfor %}
+                                                    {% endif %}
                                                 </div>
                                             </div>
-                                            <div class="administrator-info clearfix">
-                                                <div class="administrator-avatar">
-                                                    <img alt="administrator" src="../../../static/front/images/post/single/author/1.jpg">
+                                            <div class="administrator-info clearfix" style="border-top:1px solid #858282; padding-top: 15px" >
+                                                <h2 class="zm-post-title h2 px-4"><a href="javascript:void(0);">Author</a></h2>
+                                                <div class="administrator-avatar " style="width: 100px; height: 100px; overflow: hidden; object-fit: cover; border-radius: 50%;">
+                                                    <img alt="administrator" src="{{ post.blogger.profile_image.url }}">
                                                 </div>
-                                                <div class="administrator-description">
-                                                    <h4 class="post-title"><a href="#">About Thomson Smith</a></h4>
-                                                    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit. </p>
-                                                    <div class="share-social-link">
-                                                        <a href="#"><i class="fa fa-facebook"></i></a>
-                                                        <a href="#"><i class="fa fa-twitter"></i></a>
-                                                        <a href="#"><i class="fa fa-google-plus"></i></a>
-                                                        <a href="#"><i class="fa fa-rss"></i></a>
-                                                        <a href="#"><i class="fa fa-dribbble"></i></a>
-                                                    </div>
+                                                <div class="administrator-description" style="margin-bottom: 20px;">
+                                                    <h4 class="post-title"><a href="#">{{ post.blogger.first_name|title }} {{ post.blogger.last_name|title }}</a></h4>
+                                                    <p>{{ post.blogger.biography|safe|escape }}</p>
                                                 </div>
+                                             <div class="zm-social-media zm-social-2 " style="text-align: center;">
+                                                <ul class="" style="padding: 20px">
+                                                    {% if socials %}
+                                                        {% for social in socials %}
+                                                            <li>
+                                                                <a target="_blank" href="{{ social.name }}">
+                                                                   <span>{{ social.icon|safe }}</span>
+                                                                </a>
+                                                            </li>
+                                                        {% endfor %}
+                                                    {% endif %}
+
+
+                                                </ul>
+                                            </div>
                                             </div>
                                         </div>
                                     </article>
@@ -80,8 +383,8 @@
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <nav class="zm-pagination ptb-40 mtb-40 text-center border-bottom border-top">
                                         <ul class="page-numbers clearfix">
-                                            <li class=" pull-left"><a class="prev page-numbers" href="#">Previous</a></li>
-                                            <li class="pull-right"><a class="next page-numbers" href="#">Next</a></li>
+                                            <li class=" pull-left"><a class="prev page-numbers" href="{% url 'BLOG:previoussingleblog' post.slug|to_url post.id %}">Previous</a></li>
+                                            <li class="pull-right"><a class="next page-numbers" href="{% url 'BLOG:nextsingleblog' post.slug|to_url post.id %}">Next</a></li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -89,64 +392,31 @@
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <aside class="zm-post-lay-a2-area">
                                         <div class="post-title mb-40">
-                                            <h2 class="h6 inline-block">Similar Posts For You</h2>
+                                            <h2 class="h6 inline-block">Similar Posts </h2>
                                         </div>
                                         <div class="row">
-                                            <div class="zm-posts clearfix">
-                                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                                                    <article class="zm-post-lay-a2">
-                                                        <div class="zm-post-thumb">
-                                                            <a href="blog-single-image.html"><img src="../../../static/front/images/post/a/a2/11.jpg" alt="img"></a>
+                                            <div class="zm-posts clearfix owl-carousel">
+{#                                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">#}
+                                                    {% for similar_post in similar_posts %}
+                                                        <article class="zm-post-lay-a2">
+                                                        <div class="zm-post-thumb" style="height: 150px;  width: 100%; overflow: hidden;">
+                                                            <a href=""><img style="object-fit: cover; height: 100%;" src="{{ similar_post.post_image.url }}" alt="img"></a>
                                                         </div>
                                                         <div class="zm-post-dis">
                                                             <div class="zm-post-header">
-                                                                <h2 class="zm-post-title h2"><a href="blog-single-image.html">Lorem ipsum dolor sit amet consectetur.</a></h2>
+                                                                <h2 class="zm-post-title h2"><a href="{% url 'BLOG:singleblog' similar_post.title|to_url similar_post.id %}">{{ similar_post.title|title }}</a></h2>
                                                                 <div class="zm-post-meta">
                                                                     <ul>
-                                                                        <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                        <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
+                                                                        <li class="s-meta"><a href="#" class="zm-author">{{ similar_post.blogger.first_name|title }} {{ similar_post.blogger.last_name|title }}</a></li>
+                                                                        <br>
+                                                                        <li style="margin-left: 0; padding-left: 0;" class="s-meta"><a href="#" class="zm-date">{{ similar_post.created_at|naturaltime }}</a></li>
                                                                     </ul>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </article>
-                                                </div>
-                                                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                                                    <article class="zm-post-lay-a2">
-                                                        <div class="zm-post-thumb">
-                                                            <a href="blog-single-image.html"><img src="../../../static/front/images/post/a/a2/12.jpg" alt="img"></a>
-                                                        </div>
-                                                        <div class="zm-post-dis">
-                                                            <div class="zm-post-header">
-                                                                <h2 class="zm-post-title h2"><a href="blog-single-image.html">Lorem ipsum dolor sit amet consectetur.</a></h2>
-                                                                <div class="zm-post-meta">
-                                                                    <ul>
-                                                                        <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                        <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </article>
-                                                </div>
-                                                <div class="col-xs-12 col-sm-6 col-md-4 hidden-md col-lg-4 hidden-sm">
-                                                    <article class="zm-post-lay-a2">
-                                                        <div class="zm-post-thumb">
-                                                            <a href="blog-single-image.html"><img src="../../../static/front/images/post/a/a2/13.jpg" alt="img"></a>
-                                                        </div>
-                                                        <div class="zm-post-dis">
-                                                            <div class="zm-post-header">
-                                                                <h2 class="zm-post-title h2"><a href="blog-single-image.html">Lorem ipsum dolor sit amet consectetur.</a></h2>
-                                                                <div class="zm-post-meta">
-                                                                    <ul>
-                                                                        <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                        <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </article>
-                                                </div>
+                                                    {% endfor %}
+{#                                                </div>#}
                                             </div>
                                         </div>
                                     </aside>
@@ -156,93 +426,114 @@
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <div class="review-area mt-50 ptb-70 border-top">
                                         <div class="post-title mb-40">
-                                            <h2 class="h6 inline-block">There are 03 Comments for This Article</h2>
+                                            <h2 class="h6 inline-block">There are {{ comments|length }} Comments for This Article</h2>
                                         </div>
                                         <div class="review-wrap">
                                             <div class="review-inner">
-                                                <!-- Start Single Review -->
-                                                <div class="single-review clearfix">
-                                                    <div class="reviewer-img">
-                                                        <img src="../../../static/front/images/post/single/comnt/1.jpg" alt="">
+                                                {% for comment in comments %}
+                                                    <!-- Start Single Review -->
+                                                    <div class="single-review clearfix">
+                                                        <div class="reviewer-img " style="border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; background-color: grey">
+                                                            {% if  comment.blogger.profile_image %}
+                                                                <img style="height: 100%;object-fit: cover;" src="{{ comment.blogger.profile_image.url }}" alt="">
+                                                             {% else %}
+                                                                 <span style="color: white; font-size: 21px; font-weight: bolder; letter-spacing: -2px;">
+                                                                     {{ comment.blogger.first_name|slice:1|title }} {{ comment.blogger.last_name|slice:1|title}}
+                                                                 </span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="reviewer-info " style="padding-left: 20px;">
+                                                            <h4 class="reviewer-name"><a href="#">{{ comment.blogger.first_name|title }} {{ comment.blogger.last_name|title }}</a></h4>
+                                                            <span class="date-time">{{ comment.created_at|naturaltime }}</span>
+                                                            <p class="reviewer-comment">
+                                                                {{ comment.msg_content|safe|escape }}
+                                                            </p>
+                                                            {% if not comment.reply %}
+                                                                <a href="#" data-toggle="modal" data-target="#comment{{ comment.id }}" class="reply-btn">Reply</a>
+                                                            {% endif %}
+                                                        </div>
                                                     </div>
-                                                    <div class="reviewer-info">
-                                                        <h4 class="reviewer-name"><a href="#">Jhon doe</a></h4>
-                                                        <span class="date-time">Auguest 11, 2.16, 12:21pm</span>
-                                                        <p class="reviewer-comment">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit.</p>
-                                                        <a href="#" class="reply-btn">Reply</a>
-                                                    </div>
-                                                </div>
-                                                <!-- End Single Review -->
-                                                <!-- Start Single Review -->
-                                                <div class="single-review second-comment clearfix">
-                                                    <div class="reviewer-img">
-                                                        <img src="../../../static/front/images/post/single/comnt/2.jpg" alt="">
-                                                    </div>
-                                                    <div class="reviewer-info">
-                                                        <h4 class="reviewer-name"><a href="#">Jhon doe</a></h4>
-                                                        <span class="date-time">Auguest 11, 2.16, 12:21pm</span>
-                                                        <p class="reviewer-comment">Phasellus aliquam ante metus, vitae molestie turpis rutrum eu. Fusce mi risus, cursus eu elit vitae, viverra vulputate mi. Donec ullamcorper felis nec sapien ultrices feugiat. Morbi sit amet blandit nibh. Vivamus eros felis, tempus vitae dolor quis, euismod dignissim ipsum. </p>
-                                                    <a href="#" class="reply-btn">Reply</a>
-                                                    </div>
-                                                </div>
-                                                <!-- End Single Review -->
-                                                <!-- Start Single Review -->
-                                                <!-- <div class="single-review third-comment clearfix">
-                                                    <div class="reviewer-img">
-                                                        <img src="images/post/single/comnt/2.jpg" alt="">
-                                                    </div>
-                                                    <div class="reviewer-info">
-                                                        <h4 class="reviewer-name"><a href="#">Jhon doe</a></h4>
-                                                        <span class="date-time">Auguest 11, 2.16, 12:21pm</span>
-                                                        <p class="reviewer-comment">Phasellus aliquam ante metus, vitae molestie turpis rutrum eu. Fusce mi risus, cursus eu elit vitae, viverra vulputate mi. Donec ullamcorper felis nec sapien ultrices feugiat. Morbi sit amet blandit nibh. Vivamus eros felis, tempus vitae dolor quis, euismod dignissim ipsum. </p>
-                                                    <a href="#" class="reply-btn">Reply</a>
-                                                    </div>
-                                                </div> -->
-                                                <!-- End Single Review -->
-                                                <!-- Start Single Review -->
-                                                <div class="single-review clearfix">
-                                                    <div class="reviewer-img">
-                                                        <img src="../../../static/front/images/post/single/comnt/3.jpg" alt="">
-                                                    </div>
-                                                    <div class="reviewer-info">
-                                                        <h4 class="reviewer-name"><a href="#">Jhon doe</a></h4>
-                                                        <span class="date-time">Auguest 11, 2.16, 12:21pm</span>
-                                                        <p class="reviewer-comment">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit.</p>
-                                                        <a href="#" class="reply-btn">Reply</a>
-                                                    </div>
-                                                </div>
-                                                <!-- End Single Review -->
+                                                        {% for replycomment in comment.getSecondaryComments %}
+                                                            <div class="single-review second-comment clearfix">
+                                                                <div class="reviewer-img " style="border-radius: 50%; overflow: hidden; display: flex; justify-content: center; align-items: center; background-color: grey">
+                                                                    {% if  replycomment.blogger.profile_image %}
+                                                                        <img style="height: 100%;object-fit: cover;" src="{{ replycomment.blogger.profile_image.url }}" alt="">
+                                                                     {% else %}
+                                                                         <span style="color: white; font-size: 21px; font-weight: bolder; letter-spacing: -2px;">
+                                                                             {{ replycomment.blogger.first_name|slice:1|title }} {{ replycomment.blogger.last_name|slice:1|title}}
+                                                                         </span>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="reviewer-info " style="padding-left: 20px;">
+                                                                    <h4 class="reviewer-name"><a href="#">{{ replycomment.blogger.first_name|title }} {{ replycomment.blogger.last_name|title }}</a></h4>
+                                                                    <span class="date-time">{{ replycomment.created_at|date:"Y M d h m" }}</span>
+                                                                    <p class="reviewer-comment">
+                                                                        {{ replycomment.msg_content|safe|escape }}
+                                                                    </p>
+                                                                    {% if not replycomment.reply %}
+                                                                        <a href="#" data-toggle="modal" data-target="#comment{{ replycomment.id }}" class="reply-btn">Reply</a>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                {% endfor %}
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                            {% for comment in comments %}
+                                <!-- Modal -->
+                                <div class="modal fade" id="comment{{ comment.id }}" tabindex="-1" aria-labelledby="comment{{ comment.id }}" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">{{ comment.blogger.first_name|title }} {{ comment.blogger.last_name|title }}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+                                         <form action="{% url 'BLOG:replycomment' post.id comment.id %}" method="POST">
+                                            <div class="form-inner clearfix pb-2">
+                                                {% csrf_token %}
+                                                <div class="single-input">
+                                                    <textarea class="textarea replycomment" id="myeditor{{ comment.id }}" name="msg_content" placeholder="Type your comment..."></textarea>
+                                                </div>
+                                            </div>
+                                            {% if not request.user.is_authenticated %}
+                                                <button data-toggle="modal" data-target="#loginexampleModal" class="submit-button" type="button">Submit Comment</button>
+                                            {% else %}
+                                                <button class="submit-button" type="submit">Submit Comment</button>
+                                            {% endif %}
+                                        </form>
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                </div>
+                            {% endfor %}
                                 <!-- End Comment box  -->
                                 <!-- Start comment form -->
-                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <div class="comment-form-area">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="postcomment">
+                                    <div class="comment-form-area" >
                                         <div class="post-title mb-40">
-                                            <h2 class="h6 inline-block">leave a comment</h2>
+                                            <h2 class="h6 inline-block">Leave a Comment</h2>
                                         </div>
                                         <div class="form-wrap">
-                                            <form action="#">
-                                                <div class="form-inner clearfix">
-                                                    <div class="single-input left width-half">
-                                                        <input required="required" placeholder="Full Name *" type="text">
-                                                    </div>
-                                                    <div class="single-input right width-half">
-                                                        <input placeholder="Phone Number" type="text">
-                                                    </div>
-                                                    <div class="single-input left width-half">
-                                                        <input required="required" placeholder="Email Address *" type="text">
-                                                    </div>
-                                                    <div class="single-input right width-half">
-                                                        <input required="required" placeholder="Website" type="text">
-                                                    </div>
+                                            <form action="{% url 'BLOG:comment' post.id %}" method="POST">
+                                                <div class="form-inner clearfix pb-2">
+                                                    {% csrf_token %}
                                                     <div class="single-input">
-                                                        <textarea class="textarea" placeholder="Type your comment..."></textarea>
+                                                        <textarea class="textarea" id="myeditor" name="msg_content" placeholder="Type your comment..."></textarea>
                                                     </div>
-                                                    <button class="submit-button" type="submit">Submit Comment</button>
                                                 </div>
+                                                {% if not request.user.is_authenticated %}
+                                                    <button data-toggle="modal" data-target="#loginexampleModal" class="submit-button" type="button">Submit Comment</button>
+                                                {% else %}
+                                                    <button class="submit-button" type="submit">Submit Comment</button>
+                                                {% endif %}
                                             </form>
                                         </div>
                                     </div>
@@ -253,259 +544,7 @@
                         <!-- End left side -->
                         <!-- Start Right sidebar -->
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 sidebar-warp columns">
-                            <div class="row">
-                                <aside class="zm-post-lay-a-area col-sm-6 col-md-12 col-lg-12 sm-mt-50 xs-mt-50">
-                                    <div class="row mb-40">
-                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div class="section-title">
-                                                <h2 class="h6 header-color inline-block uppercase">Today’s Tips</h2>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div class="zm-posts">
-                                                <article class="zm-post-lay-a sidebar">
-                                                    <div class="zm-post-thumb">
-                                                        <a href="blog-single-image.html"><img src="../../../static/front/images/post/b/1.jpg" alt="img"></a>
-                                                    </div>
-                                                    <div class="zm-post-dis">
-                                                        <div class="zm-post-header">
-                                                            <h2 class="zm-post-title h2"><a href="blog-single-image.html">Consectetur adipisicing elit sed eiusmod tempor incididunt.</a></h2>
-                                                            <div class="zm-post-meta">
-                                                                <ul>
-                                                                    <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                    <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </article>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </aside>
-                                <!-- Start Subscribe From -->
-                                <div class="col-md-12 col-lg-12 col-sm-6 mt-60 sm-mb-50">
-                                    <aside class="subscribe-form bg-dark text-center sidebar">
-                                        <h3 class="uppercase zm-post-title">Get Email Updates</h3>
-                                        <p>Join 80,000+ awesome subscribers and update yourself with our exclusive news.</p>
-                                        <form action="#">
-                                            <input placeholder="Enter your full name" type="text">
-                                            <input placeholder="Enter email address" required="" type="email">
-                                            <input value="Subscribe" type="submit">
-                                        </form>
-                                    </aside>
-                                </div>
-                                <!-- End Subscribe From -->
-                                <!-- Start post layout E -->
-                                <aside class="zm-post-lay-e-area col-sm-6 col-md-12 col-lg-12 mt-70">
-                                    <div class="row mb-40">
-                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div class="section-title">
-                                                <h2 class="h6 header-color inline-block uppercase">Most Commented</h2>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div class="zm-posts">
-                                                <!-- Start single post layout E -->
-                                                <article class="zm-post-lay-e zm-single-post clearfix">
-                                                    <div class="zm-post-thumb f-left">
-                                                        <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/5.jpg" alt="img"></a>
-                                                    </div>
-                                                    <div class="zm-post-dis f-right">
-                                                        <div class="zm-post-header">
-                                                            <h2 class="zm-post-title"><a href="blog-single-image.html">Magna aliqua ut enim ad minim veniam quis nostrud.</a></h2>
-                                                            <div class="zm-post-meta">
-                                                                <ul>
-                                                                    <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                    <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </article>
-                                                <!-- Start single post layout E -->
-                                                <!-- Start single post layout E -->
-                                                <article class="zm-post-lay-e zm-single-post clearfix">
-                                                    <div class="zm-post-thumb f-left">
-                                                        <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/2.jpg" alt="img"></a>
-                                                    </div>
-                                                    <div class="zm-post-dis f-right">
-                                                        <div class="zm-post-header">
-                                                            <h2 class="zm-post-title"><a href="blog-single-image.html">Enim ad minim veniam nostrud xercitation ullamco.</a></h2>
-                                                            <div class="zm-post-meta">
-                                                                <ul>
-                                                                    <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                    <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </article>
-                                                <!-- Start single post layout E -->
-                                                <!-- Start single post layout E -->
-                                                <article class="zm-post-lay-e zm-single-post clearfix">
-                                                    <div class="zm-post-thumb f-left">
-                                                        <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/6.jpg" alt="img"></a>
-                                                    </div>
-                                                    <div class="zm-post-dis f-right">
-                                                        <div class="zm-post-header">
-                                                            <h2 class="zm-post-title"><a href="blog-single-image.html">Enim ad minim veniam nostrud xercitation ullamco.</a></h2>
-                                                            <div class="zm-post-meta">
-                                                                <ul>
-                                                                    <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                    <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </article>
-                                                <!-- Start single post layout E -->
-                                                <!-- Start single post layout E -->
-                                                <article class="zm-post-lay-e zm-single-post hidden-md clearfix">
-                                                    <div class="zm-post-thumb f-left">
-                                                        <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/7.jpg" alt="img"></a>
-                                                    </div>
-                                                    <div class="zm-post-dis f-right">
-                                                        <div class="zm-post-header">
-                                                            <h2 class="zm-post-title"><a href="blog-single-image.html">Laboris nisi ut aliquip dolor in elit reprehenderit velit esse.</a></h2>
-                                                            <div class="zm-post-meta">
-                                                                <ul>
-                                                                    <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                    <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </article>
-                                                <!-- Start single post layout E -->
-                                                <!-- Start single post layout E -->
-                                                <article class="zm-post-lay-e zm-single-post hidden-md clearfix">
-                                                    <div class="zm-post-thumb f-left">
-                                                        <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/8.jpg" alt="img"></a>
-                                                    </div>
-                                                    <div class="zm-post-dis f-right">
-                                                        <div class="zm-post-header">
-                                                            <h2 class="zm-post-title"><a href="blog-single-image.html">Duis aute irure dolor in velit esse cillum fugiat nulla.</a></h2>
-                                                            <div class="zm-post-meta">
-                                                                <ul>
-                                                                    <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                    <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </article>
-                                                <!-- Start single post layout E -->
-                                                <!-- Start single post layout E -->
-                                                <article class="zm-post-lay-e zm-single-post hidden-md clearfix">
-                                                    <div class="zm-post-thumb f-left">
-                                                        <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/3.jpg" alt="img"></a>
-                                                    </div>
-                                                    <div class="zm-post-dis f-right">
-                                                        <div class="zm-post-header">
-                                                            <h2 class="zm-post-title"><a href="blog-single-image.html">Laboris nisi ut aliquip dolor in elit reprehenderit velit esse.</a></h2>
-                                                            <div class="zm-post-meta">
-                                                                <ul>
-                                                                    <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                    <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </article>
-                                                <!-- Start single post layout E -->
-                                                <!-- Start single post layout E -->
-                                                <article class="zm-post-lay-e zm-single-post hidden-sm hidden-md clearfix">
-                                                    <div class="zm-post-thumb f-left">
-                                                        <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/2.jpg" alt="img"></a>
-                                                    </div>
-                                                    <div class="zm-post-dis f-right">
-                                                        <div class="zm-post-header">
-                                                            <h2 class="zm-post-title"><a href="blog-single-image.html">Duis aute irure dolor in velit esse cillum fugiat nulla.</a></h2>
-                                                            <div class="zm-post-meta">
-                                                                <ul>
-                                                                    <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                    <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </article>
-                                                <!-- Start single post layout E -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                </aside>
-                                <!-- End post layout E -->
-                                <aside class="zm-post-lay-f-area col-sm-6 col-md-12 col-lg-12 mt-70">
-                                    <div class="row mb-40">
-                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div class="section-title">
-                                                <h2 class="h6 header-color inline-block uppercase">Recent Commented</h2>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div class="zm-posts">
-                                                <!-- Start single post layout F -->
-                                                <div class="zm-post-lay-f zm-single-post clearfix">
-                                                    <div class="zm-post-dis">
-                                                        <p><a href="#"> Nasir Uddin </a> - <em>“ Ut enim ad minim veniam, quis nostrud, sed do eiusmod tempor...” </em>  <strong>on Magna aliqua ut enim ad minim veniam quis nostrud.</strong></p>
-                                                    </div>
-                                                </div>
-                                                <!-- Start single post layout F -->
-                                                <!-- Start single post layout F -->
-                                                <div class="zm-post-lay-f zm-single-post clearfix">
-                                                    <div class="zm-post-dis">
-                                                        <p><a href="#"> Sayeed Ahmad </a> - <em> “ Ut enim ad minim veniam, quis nostrud, sed do eiusmod tempor...” </em> <strong>on Magna aliqua ut enim ad minim veniam quis nostrud.</strong></p>
-                                                    </div>
-                                                </div>
-                                                <!-- Start single post layout F -->
-                                                <!-- Start single post layout F -->
-                                                <div class="zm-post-lay-f zm-single-post clearfix">
-                                                    <div class="zm-post-dis">
-                                                        <p><a href="#"> ThemeHook </a> - <em> “ Ut enim ad minim veniam, quis nostrud, sed do eiusmod tempor...” </em> <strong>on Magna aliqua ut enim ad minim veniam quis nostrud.</strong></p>
-                                                    </div>
-                                                </div>
-                                                <!-- Start single post layout F -->
-                                                <!-- Start single post layout F -->
-                                                <div class="zm-post-lay-f zm-single-post clearfix">
-                                                    <div class="zm-post-dis">
-                                                        <p><a href="#"> Nasir Uddin </a> - <em> “ Ut enim ad minim veniam, quis nostrud, sed do eiusmod tempor...” </em> <strong>on Magna aliqua ut enim ad minim veniam quis nostrud.</strong></p>
-                                                    </div>
-                                                </div>
-                                                <!-- Start single post layout F -->
-                                                <!-- Start single post layout F -->
-                                                <div class="zm-post-lay-f zm-single-post clearfix">
-                                                    <div class="zm-post-dis">
-                                                        <p><a href="#"> Sayeed Ahmad </a> - <em> “ Ut enim ad minim veniam, quis nostrud, sed do eiusmod tempor...” </em> <strong>on Magna aliqua ut enim ad minim veniam quis nostrud.</strong></p>
-                                                    </div>
-                                                </div>
-                                                <!-- Start single post layout F -->
-                                                <!-- Start single post layout F -->
-                                                <div class="zm-post-lay-f zm-single-post clearfix">
-                                                    <div class="zm-post-dis">
-                                                        <p><a href="#"> ThemeHook </a> - <em> “ Ut enim ad minim veniam, quis nostrud, sed do eiusmod tempor...” </em> <strong>on Magna aliqua ut enim ad minim veniam quis nostrud.</strong></p>
-                                                    </div>
-                                                </div>
-                                                <!-- Start single post layout F -->
-                                                <!-- Start single post layout F -->
-                                                <div class="zm-post-lay-f zm-single-post clearfix">
-                                                    <div class="zm-post-dis">
-                                                        <p><a href="#"> Nasir Uddin </a> - <em> “ Ut enim ad minim veniam, quis nostrud, sed do eiusmod tempor...” </em> <strong>on Magna aliqua ut enim ad minim veniam quis nostrud.</strong></p>
-                                                    </div>
-                                                </div>
-                                                <!-- Start single post layout F -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                </aside>
-                            </div>
+                             {% include 'bnews/sidebar.html' %}
                         </div>
                         <!-- End Right sidebar -->
                     </div>
@@ -513,5 +552,113 @@
             </div>
         </div>
         <!-- End page content -->
+
 {% endblock content %}
+{% block script %}
+    <script type="text/javascript" src="{% static 'front/css/OwlCarousel/owl.carousel.min.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+
+          $(".owl-carousel").owlCarousel({
+              autoplay: true,
+              dots: true,
+              stagePadding: 0,
+              loop: true,
+              margin: 10,
+              nav: true,
+              navText: ['<i class="fas fa-arrow-circle-left"></i>', '<i class="fas fa-arrow-circle-right"></i>'],
+              {#navContainer: '#lgi__slider',#}
+              {#navClass: [ 'lgi__btn lgi__btn--prev', 'lgi__btn lgi__btn--next' ],#}
+              responsive: {
+                0: {
+                  items: 1,
+                },
+                768: {
+                  items: 2,
+                  autoWidth: false,
+                },
+                992: {
+                  items: 3,
+                  autoWidth: false,
+                },
+                1310: {
+                  items: 3,
+                  autoWidth: false,
+                  margin: 30,
+                }
+              }
+          });
+
+          $('.like-buttonn').click(function () {
+            let btn = $(this)
+            let id  = Number($(this).attr('data-post-id'));
+            let loca = "{% url 'BLOG:likepost' post_id=999 %}".replace(/999/, id);
+            let dataa = {
+                id: id,
+            };
+            $.post(loca, dataa, function(data, status){
+                console.log(data)
+                if ( data['status'] === 'liked'){
+                   $(btn).addClass('is-active');
+                   $(btn).parent().find('.like_count').text(data['count']);
+                }
+                else if(data['status'] === 'unliked'){
+                    $(btn).removeClass('is-active');
+                    $(btn).parent().find('.like_count').text(data['count']);
+
+                }
+              });
+          })
+          $('.replycomment').each(function () {
+               ClassicEditor
+                .create( document.querySelector( '#'+ $(this).attr('id') ),{
+                     removePlugins: [ 'Insert image', 'Insert media', 'Title' ],
+                    toolbar: [
+                         'heading',
+                         'Paragraph',
+                         'Highlight',
+                         'bold',
+                         'italic',
+                         'FontFamily',
+                         'FontSize',
+                         'FontColor',
+                         'FontBackgroundColor',
+                         'Indent',
+                         'IndentBlock',
+                         'TextTransformation',
+                         'blockQuote',
+                         'Autoformat',
+                         'undo',
+                         'redo',
+                         'link',
+                         'bulletedList',
+                         'Alignment',
+                         'Code',
+                         'Codeblock',
+                         'Highlight',
+                         'Horizontalline',
+                         'MathType',
+                         'Markdown',
+                         'Mention',
+                         'Page break',
+                         'Media embed toolbar',
+                         'Special characters',
+                         'Standard editing mode',
+                         'Strikethrough',
+                         'Subscript',
+                         'Superscript',
+                         'Underline',
+                         'Word count',
+                         'numberedList'],
+                } )
+                .then( editor => {
+                    console.log( editor );
+                } )
+                .catch( error => {
+                    console.error( error );
+                } );
+              })
+        });
+    </script>
+{% endblock script %}
 

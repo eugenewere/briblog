@@ -1,0 +1,427 @@
+{% extends 'bnews/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% load templatetag %}
+{% load hitcount_tags %}
+{% block content %}
+    <section id="page-content" class="page-wrapper">
+        <div class="zm-section bg-white pt-30 xs-pt-30 pb-40">
+            <div class="container">
+                <div class="row">
+                    <!-- Start left side -->
+                    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 columns">
+                        <div class="row mb-40">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="section-title">
+                                    <h2 class="h6 header-color inline-block uppercase">Account</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                         <div class="col-md-12" >
+                                 <div id="error_div" style="display:none;">
+                                        <div class="alert alert-danger alert-dismissable">
+                                            <h4>Please fix the following errors</h4>
+                                            <ul id="errorlist" >
+
+
+                                            </ul>
+                                        </div>
+                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal -->
+                       <div class="modal fade" id="changepassoword" tabindex="-1" aria-labelledby="changepassoword" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Change Passoword</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                              <form action="{% url 'BLOG:change_password' %}" method="post">
+                                  {% csrf_token %}
+                                   <div class="single-input">
+                                        <label>Old <span style="color: red;">*</span></label>
+                                        <input required name="old_password" placeholder="Password" type="password">
+                                    </div>
+                                  <div class="single-input">
+                                        <label>New Password <span style="color: red;">*</span></label>
+                                        <input required name="new_password1" placeholder="Confirm Password" type="password">
+                                    </div>
+                                  <div class="single-input">
+                                        <label>Confirm New Password <span style="color: red;">*</span></label>
+                                        <input required name="new_password2" placeholder="Confirm Password" type="password">
+                                    </div>
+                                      <button class="submit-button mt-3">
+                                          Change Password
+                                      </button>
+                              </form>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+
+                        <div class="row">
+                            <button type="button" class="btn btn-danger" style="margin-bottom: 10px" data-toggle="modal" data-target="#changepassoword">
+                                      Change Password
+                                    </button>
+                            <div class="col-sm-12">
+
+                                <ul class="nav nav-tabs " id="myTab" role="tablist">
+                                  <li class="nav-item" role="presentation">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Personal Details</a>
+                                  </li>
+                                  <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Social</a>
+                                  </li>
+                                </ul>
+                                <div class="tab-content" id="myTabContent ">
+                                  <div class="tab-pane fade p-3" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                        <div class="registation-form-wrap">
+                                            <form id="registerform" action="{% url 'BLOG:updateuserdetails' %}" enctype="multipart/form-data" method="post">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+
+                                                        <label for="">Upload Picture</label>
+                                                        <label for="profile_image" style="overflow:hidden; border-radius:20px; display: flex; justify-content:center; flex-direction: column;align-items: center; width: 300px; height: 300px;">
+                                                            <img class="blah" src="{% if blogger.profile_image %} {{ blogger.profile_image.url }} {% else %} {% static 'front/images/download.png' %} {% endif %}" alt="">
+                                                        </label>
+                                                        <input value="{% if blogger.profile_image %} {{ blogger.profile_image }} {% endif %}" style="position: relative; display: none" onchange="readURL(this)" type="file"
+                                                               name="profile_image" id="profile_image" class="inputfile"/>
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <div class="single-input">
+                                                            <label>First Name <span style="color: red;">*</span></label>
+                                                            <input required value="{{ blogger.first_name }}" name="first_name" placeholder="First Name" type="text">
+                                                        </div>
+                                                       <div class="single-input">
+                                                            <label>Email <span style="color: red;">*</span></label>
+                                                            <input required value="{{ blogger.email }}" name="email" placeholder="Email" type="text">
+                                                       </div>
+                                                       <div class="single-input">
+                                                            <label>County <span style="color: red;">*</span></label>
+                                                            <select required name="county" id="">
+                                                               <option >Choose county</option>
+                                                                {% for county in counties %}
+                                                                   <option {% if blogger.county.id == county.id %} selected {% endif %} value="{{ county.id }}">{{ county.county|title }}</option>
+                                                                {% endfor %}
+                                                           </select>
+                                                       </div>
+                                                        <div class="single-input">
+                                                            <label>Phone Number <span style="color: red;">*</span></label>
+                                                            <input value="{{ blogger.phone_number }}" name="phone_number" placeholder="Phone Number" type="text">
+                                                       </div>
+                                                    </div>
+
+
+
+
+
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <div class="single-input">
+                                                            <label>Last Name <span style="color: red;">*</span></label>
+                                                            <input required value="{{ blogger.last_name }}" name="last_name" placeholder="Last Name" type="text">
+                                                        </div>
+                                                        <div class="single-input">
+                                                            <label>Username <span style="color: red;">*</span></label>
+                                                            <input required value="{{ blogger.username }}" name="username" placeholder="Username" type="text">
+                                                        </div>
+                                                        <div class="single-input">
+                                                            <label>Date Of Birth <span style="color: red;">*</span></label>
+                                                            <input  value="{{ blogger.date_of_birth|date:'Y-m-d' }}" name="date_of_birth" placeholder="Date Of Birth" type="date">
+                                                       </div>
+                                                       <div class="single-input">
+                                                            <label>Gender <span style="color: red;">*</span></label>
+                                                           <select required name="gender" id="">
+                                                               <option >Choose gender</option>
+                                                               <option {% if blogger.gender == 'male' %} selected {% endif %} value="male">Male</option>
+                                                               <option {% if blogger.gender == 'female' %} selected {% endif %} value="female">Female</option>
+                                                           </select>
+                        {#                                    <input name="email" placeholder="Email" type="text">#}
+                                                       </div>
+
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="single-input">
+                                                            <label>Biography</label> <br>
+                                                            <textarea name="biography" id="bio" cols="30" rows="10">
+                                                                {{ blogger.biography }}
+                                                            </textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% if not blogger.newsletterSubscribed %}
+                                                <div class="row">
+                                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                                        <div class="single-input">
+                                                            <label>NewsLetter</label> <br>
+                                                            <input name="newsletter" value="1" class="remember" type="checkbox">Subscribe to our NewsLetter
+                                                            <button  class="submit-button mt-20 inline-block" type="submit">Update</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <div class="row">
+                                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                                        <div class="single-input">
+                                                            <label>NewsLetter</label> <br>
+                                                            <input name="newsletter" value="0" class="remember" type="checkbox">UnSubscribe from our NewsLetter
+                                                            <button  class="submit-button mt-20 inline-block" type="submit">Update</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+
+
+                                            </form>
+                                        </div>
+                                  </div>
+                                  <div class="tab-pane fade p-3" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                        <button class="btn btn-danger " data-toggle="modal" data-target="#addsocial">Add Socials</button>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="addsocial" tabindex="-1" aria-labelledby="addsocialLabel" aria-hidden="true">
+                                          <div class="modal-dialog">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Social</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                              </div>
+                                              <div class="modal-body">
+                                                  <div class="col-sm-12" style="display: contents">
+                                                     <form id="registerform" action="{% url 'BLOG:addsocial' %}" enctype="multipart/form-data" method="post">
+                                                        {% csrf_token %}
+                                                        <div class="row">
+                                                            <input type="text" name="blogger" value="{{ blogger.id }}" hidden>
+                                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                                <div class="single-input">
+                                                                    <label>Link <span style="color: red;">*</span></label>
+                                                                    <input required value="" name="name" placeholder="Link" type="url">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12 col-sm-12 col-xs-12">
+
+                                                                <div class="single-input">
+                                                                    <label>Icon <span style="color: red;">*</span> </label>
+                                                                    <input required value="" name="icon" placeholder="Icon class name eg <i class='fab fa-facebook-f'></i>" type="text">
+                                                                </div>
+                                                                 <span>
+                                                                    <a href="https://fontawesome.com" target="_blank"> Get Icons FontAwesome</a>
+
+                                                                </span>
+                                                            </div>
+                                                            <div class="row" style="padding: 0 37px;">
+                                                                <button type="submit" class="submit-button">Save</button>
+                                                            </div>
+                                                        </div>
+                                                     </form>
+                                                  </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="registation-form-wrap">
+                                            {% if socials %}
+                                                 {% for social in socials %}
+                                                     <!-- Modal -->
+                                                    <div class="modal fade" id="deletesocial{{ social.id }}" tabindex="-1" aria-labelledby="deletesocial{{ social.id }}" aria-hidden="true">
+                                                      <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                          <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Delete Confirmation</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                              <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                          </div>
+                                                          <div class="modal-body">
+                                                            <p>Are you sure you want to delete : <strong>{{ social.name }}</strong>  </p>
+                                                          </div>
+                                                          <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            <a href="{% url 'BLOG:deletesocial' social.id %}" type="button" class="btn btn-danger">Delete</a>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                    <form id="registerform" action="{% url 'BLOG:updatesocial' social.id %}" enctype="multipart/form-data" method="post">
+                                                        {% csrf_token %}
+                                                        <div class="row" style="padding: 5px; border-radius: 5px; border: 1px solid darkgrey; margin-bottom: 5px;">
+                                                                <input type="text" name="blogger" value="{{ blogger.id }}" hidden>
+                                                                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                                                                    <div class="single-input mb-0">
+                                                                        <label>Link <span style="color: red;">*</span></label>
+                                                                        <input class="mb-0" required value="{{ social.name }}" name="name" placeholder="Link" type="url">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+
+                                                                    <div class="single-input mb-0">
+                                                                        <label>Icon <span style="color: red;">*</span> </label>
+                                                                        <input class="mb-0" required value="{{ social.icon }}" name="icon" placeholder="Icon class name eg <i class='fab fa-facebook-f'></i>" type="text">
+                                                                    </div>
+                                                                     <span>
+                                                                        <a href="https://fontawesome.com" target="_blank"> Get Icons FontAwesome</a>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="row" style="padding: 0 37px;">
+                                                                    <button type="submit" class="submit-button rounded" style="width: 60% !important;">Update</button>
+                                                                    <a href="" data-toggle="modal" data-target="#deletesocial{{ social.id }}" class="btn btn-danger ml-auto">
+                                                                        <i class="fa fa-trash text-white"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                    </form>
+                                                 {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                  </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End left side -->
+                    <!-- Start Right sidebar -->
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 sidebar-warp columns">
+                         {% include 'bnews/sidebar.html' %}
+                    </div>
+                    <!-- End Right sidebar -->
+                </div>
+                <!-- Start pagination area -->
+
+                <!-- End pagination area -->
+                <!-- Start Advertisement -->
+                <div class="advertisement">
+                    <div class="row mt-40">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+{#                            <a href="#"><img src="../../../static/front/images/ad/5.jpg" alt=""></a>#}
+                        </div>
+                    </div>
+                </div>
+                <!-- End Advertisement -->
+            </div>
+        </div>
+    </section>
+{% endblock content %}
+{% block script %}
+    <script>
+
+        $(document).ready(function(){
+            $('.nav-tabs li:first-child a').tab('show')
+           {#var spinner = $('#signuploader');#}
+           $("#registerform").submit(function(e){
+               {#console.log('thiss');#}
+                e.preventDefault();
+                {#spinner.show();#}
+                var new_form_data = new FormData(this);
+
+                setTimeout(
+                    $.ajax({
+                    method : 'POST',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    data : new_form_data,
+                    enctype: 'multipart/form-data',
+                    url :  $("#registerform").attr('action'),
+                    success : function(response){
+                        {#spinner.hide();#}
+                        if (response.results === 'success') {
+                             $('#error_div').fadeOut()
+                            $("#registerform")[0].reset();
+                            swal.fire({
+                                title: "Success!",
+                                text: response.success,
+                                type: "success",
+                                confirmButtonText: "Continue",
+                            });
+                            setTimeout(function () {
+                                window.location = window.location.href;
+                            }, 3000)
+                         }
+                        else {
+                            var resp = response['form']
+                            let k = JSON.stringify(resp)
+                            let str = JSON.parse(resp)
+                            for (var key in str) {
+                              if (str.hasOwnProperty(key)) {
+                                $('#errorlist').append(
+                                    '<li class="text-capitalize">'+
+                                       '<span>'+ key +'</span>'+
+                                       ' <a href="#" class="error">'+
+                                          str[key][0]['message']+
+                                       '</a>'+
+                                    '</li>'
+                                )
+                              }
+                            }
+                            $('#error_div').show();
+                            setTimeout(function () {
+                                swal.fire({
+                                    title: "Error!",
+                                    text: "Form Is Invalid. Please fix the below errors",
+                                    type: "error",
+                                    confirmButtonText: "Retry"
+                                });
+                            },2000);
+                         }
+                    },
+                    error : function(response){
+                        console.log(response);
+                        {#spinner.hide();#}
+
+                    }
+                }),3000);
+           });
+        });
+        ClassicEditor
+            .create( document.querySelector( '#bio' ),{
+                 removePlugins: [  'Image','Table','Media','Image' ],
+                 alignment: {
+                        options: [ 'left', 'right' ]
+                    },
+                        toolbar: {
+                        items: [
+                          'heading',
+                          '|',
+                          'bold',
+                          'italic',
+                          '|',
+                          'bulletedList',
+                          'numberedList',
+                          '|',
+                          'undo',
+                          'redo',
+                             '|',
+                            'alignment',
+                        ]
+                      },
+            } )
+            .then( editor => {
+                    console.log( editor );
+            } )
+            .catch( error => {
+                    console.error( error );
+            } );
+        function readURL(input) {
+
+        if (input.files && input.files[0]) {
+         var reader = new FileReader();
+         // var disclaimer= document.getElementById("");
+            reader.onload = function (element) {
+                $('.blah').attr('src', element.target.result);
+                {#$('#disclaimer').text('Change Profile')#}
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+     }
+    </script>
+{% endblock script %}

@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# import export as export
 import sweetify
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,8 +34,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'blogfrontapp',
-    'blogbackapp',
+    'blogfrontapp.apps.BlogfrontappConfig',
+    'blogbackapp.apps.BlogbackappConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'djrichtextfield',
     'social_django',
     'sweetify',
+    'crispy_forms',
 
 ]
 
@@ -108,15 +110,11 @@ DATABASES = {
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
+
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
+
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
@@ -167,8 +165,8 @@ SOCIAL_AUTH_FACEBOOK_KEY = '746649342720717'
 SOCIAL_AUTH_FACEBOOK_SECRET = 'd889a66c0b7110761da974da5fbd4c42'
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'Climatechangebasicske@gmail.com'
 EMAIL_HOST_PASSWORD = 'Brandoxvilla7123'
@@ -191,6 +189,12 @@ sweetify.DEFAULT_OPTS = {
     }
 }
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 # CELERY_BROKER_URL = 'amqp://localhost'
 # CELERY_RESULT_BACKEND = 'django-db'
 # CELERY_CACHE_BACKEND = 'django-cache'
+
+
+
+# export DJANGO_SETTINGS_MODULE=brioblog.settings

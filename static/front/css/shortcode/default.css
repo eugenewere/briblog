@@ -2256,7 +2256,7 @@ textarea:focus {
   width: 100%;
 }
 
-select, input[type="text"], input[type="email"], input[type="password"], input[type="date"] {
+select, input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="url"] {
   background: #fff none repeat scroll 0 0;
   border: 1px solid #e6e6e6;
   box-shadow: none;
@@ -2266,7 +2266,7 @@ select, input[type="text"], input[type="email"], input[type="password"], input[t
   padding-left: 20px;
   width: 100%;
 }
-input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus , input[type="url"]:focus {
   border-color: #f0442c;
 }
 textarea {

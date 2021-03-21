@@ -1,6 +1,8 @@
 {% extends 'bnews/layout.html' %}
 {% load static %}
 {% load humanize %}
+{% load templatetag %}
+{% load hitcount_tags %}
 {% block content %}
     <section id="page-content" class="page-wrapper">
         <div class="zm-section bg-white pt-30 xs-pt-30 pb-40">
@@ -16,395 +18,62 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="zm-posts clearfix">
+                            <div class="zm-posts clearfix itempaginate">
                                 <!-- Start single post layout A1 -->
-                                {% for allpost in allposts %}
-                                    <div class="col-md-12">
-                                    <article class="zm-post-lay-a">
-                                        <div class="zm-post-thumb">
-                                            <a href="javascript:void(0)"><img src="{{ allpost.post_image.url }}" alt="img"></a>
-                                        </div>
-                                        <div class="zm-post-dis">
-                                            <div class="zm-post-header">
-                                                <div class="zm-category"><a href="#" class="bg-cat-5 cat-btn">{{ allpost.category.category|title }}</a></div>
-                                                <h2 class="zm-post-title h2"><a href="blog-single-image.html">{{ allpost.title}}</a></h2>
-                                                <div class="zm-post-meta">
-                                                    <ul>
-                                                        <li class="s-meta"><a href="#" class="zm-author">{{ allpost.blogger.first_name|title }} {{ allpost.blogger.last_name|title }}</a></li>
-                                                        <li class="s-meta"><a href="#" class="zm-date">{{ allpost.created_at|naturaltime }}</a></li>
-                                                    </ul>
+                                 {% if allposts %}
+                                     {% for allpost in allposts %}
+                                        <div class=" itempag col-md-12">
+                                        <article class="zm-post-lay-a">
+                                            <div class="zm-post-thumb" style="height: 400px; overflow: hidden; border-radius: 10px; box-shadow: 4px 3px 10px black, -4px -3px 10px black; object-fit: cover;">
+                                                <a style="height: 100%;" href="javascript:void(0)">
+                                                    <img style="height: 100%; object-fit: cover;" src="{{ allpost.post_image.url }}" alt="img">
+                                                </a>
+                                            </div>
+                                            <div class="zm-post-dis">
+                                                <div class="zm-post-header">
+                                                    <div class="zm-category"><a href="#" class="bg-cat-5 cat-btn">{{ allpost.category.category|title }}</a></div>
+                                                    <h2 class="zm-post-title h2"><a href="{% url 'BLOG:singleblog' allpost.slug|to_url allpost.id %}">{{ allpost.title}}</a></h2>
+                                                    <div class="zm-post-meta">
+                                                        <ul>
+                                                            <li class="s-meta"><a href="#" class="zm-author">{{ allpost.blogger.first_name|title }} {{ allpost.blogger.last_name|title }}</a></li>
+                                                            <li class="s-meta"><a href="#" class="zm-date">{{ allpost.created_at|naturaltime }}</a></li>
+                                                            <li class="s-meta"><a href="#" class="zm-date"><i class="fa fa-eye text-success mr-2"></i> [{{ allpost.getHitcountOfPost|intcomma }}]</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="zm-post-content text-justify">
+                                                    {{ allpost.description|truncatechars_html:600|safe|escape }}
                                                 </div>
                                             </div>
-                                            <div class="zm-post-content text-justify">
-                                                {{ allpost.description|safe|escape }}
-                                            </div>
-                                        </div>
-                                    </article>
-                                </div>
-                                 {% endfor %}
-                                <div class="col-md-12">
-                                    <article class="zm-post-lay-a">
-                                        <div class="zm-post-thumb">
-                                            <a href="blog-single-image.html"><img src="../../../static/front/images/post/a/2.jpg" alt="img"></a>
-                                        </div>
-                                        <div class="zm-post-dis">
-                                            <div class="zm-post-header">
-                                                <div class="zm-category"><a href="#" class="bg-cat-5 cat-btn">Entertainment</a></div>
-                                                <h2 class="zm-post-title h2"><a href="blog-single-image.html">Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia.</a></h2>
-                                                <div class="zm-post-meta">
-                                                    <ul>
-                                                        <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                        <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="zm-post-content">
-                                                <p>Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                            </div>
-                                        </div>
-                                    </article>
-                                </div>
-                                <!-- End single post layout A1 -->
-                                <!-- Start single post layout A1 -->
-                                <div class="col-md-12">
-                                    <article class="zm-post-lay-a">
-                                        <div class="zm-post-thumb">
-                                            <a href="blog-single-image.html"><img src="../../../static/front/images/post/a/3.jpg" alt="img"></a>
-                                        </div>
-                                        <div class="zm-post-dis">
-                                            <div class="zm-post-header">
-                                                <div class="zm-category"><a href="#" class="bg-cat-4 cat-btn">Travel</a></div>
-                                                <h2 class="zm-post-title h2"><a href="blog-single-image.html">Duis aute irure dolor in reprehenderit in velit esse cillumfugiat nulla pariatur.</a></h2>
-                                                <div class="zm-post-meta">
-                                                    <ul>
-                                                        <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                        <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="zm-post-content">
-                                                <p>Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                            </div>
-                                        </div>
-                                    </article>
-                                </div>
-                                <!-- End single post layout A1 -->
-                                <!-- Start single post layout A1 -->
-                                <div class="col-md-12">
-                                    <article class="zm-post-lay-a">
-                                        <div class="zm-post-thumb">
-                                            <a href="blog-single-image.html"><img src="../../../static/front/images/post/a/4.jpg" alt="img"></a>
-                                        </div>
-                                        <div class="zm-post-dis">
-                                            <div class="zm-post-header">
-                                                <div class="zm-category"><a href="#" class="bg-cat-3 cat-btn">Nature</a></div>
-                                                <h2 class="zm-post-title h2"><a href="blog-single-image.html">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.</a></h2>
-                                                <div class="zm-post-meta">
-                                                    <ul>
-                                                        <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                        <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="zm-post-content">
-                                                <p>Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                            </div>
-                                        </div>
-                                    </article>
-                                </div>
-                                <!-- End single post layout A1 -->
-                                <!-- Start single post layout A1 -->
-                                <div class="col-md-12">
-                                    <article class="zm-post-lay-a">
-                                        <div class="zm-post-thumb">
-                                            <a href="blog-single-image.html"><img src="../../../static/front/images/post/a/5.jpg" alt="img"></a>
-                                        </div>
-                                        <div class="zm-post-dis">
-                                            <div class="zm-post-header">
-                                                <div class="zm-category"><a href="#" class="bg-cat-5 cat-btn">food</a></div>
-                                                <h2 class="zm-post-title h2"><a href="blog-single-image.html">Accusantium doloremque laudantium totam rem aperiam eaque ipsa quae.</a></h2>
-                                                <div class="zm-post-meta">
-                                                    <ul>
-                                                        <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                        <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="zm-post-content">
-                                                <p>Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                            </div>
-                                        </div>
-                                    </article>
-                                </div>
-                                <!-- End single post layout A1 -->
-                                <!-- Start single post layout A1 -->
-                                <div class="col-md-12">
-                                    <article class="zm-post-lay-a">
-                                        <div class="zm-post-thumb">
-                                            <a href="blog-single-image.html"><img src="../../../static/front/images/post/a/6.jpg" alt="img"></a>
-                                        </div>
-                                        <div class="zm-post-dis">
-                                            <div class="zm-post-header">
-                                                <div class="zm-category"><a href="#" class="bg-cat-1 cat-btn">Business</a></div>
-                                                <h2 class="zm-post-title h2"><a href="blog-single-image.html">Accusantium doloremque laudantium totam rem aperiam eaque ipsa quae.</a></h2>
-                                                <div class="zm-post-meta">
-                                                    <ul>
-                                                        <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                        <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="zm-post-content">
-                                                <p>Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                            </div>
-                                        </div>
-                                    </article>
-                                </div>
-                                <!-- End single post layout A1 -->
+                                        </article>
+                                    </div>
+                                     {% endfor %}
+                                {% else %}
+                                    <div class="col-sm-12" style="display:flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px;">
+                                        <h3 style="padding: 20px;">No Post Found</h3>
+                                        <img style="height: 340px;" src="{% static 'front/images/noposts.svg' %}" alt="">
+                                    </div>
+                                {% endif %}
+
                             </div>
                         </div>
                     </div>
                     <!-- End left side -->
                     <!-- Start Right sidebar -->
                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 sidebar-warp columns">
-                        <div class="row">
-                            <!-- Start Subscribe From -->
-                            <div class="col-md-12 col-lg-12 col-sm-6 sm-mt-40">
-                                <aside class="subscribe-form bg-dark  text-center sidebar">
-                                    <h3 class="uppercase zm-post-title">Get Email Updates</h3>
-                                    <p>Join 80,000+ awesome subscribers and update yourself with our exclusive news.</p>
-                                    <form action="#">
-                                        <input type="text" placeholder="Enter your full name">
-                                        <input type="email" placeholder="Enter email address" required="">
-                                        <input type="submit" value="Subscribe">
-                                    </form>
-                                </aside>
-                            </div>
-                            <!-- End Subscribe From -->
-                            <aside class="col-md-12 col-sm-6 col-lg-12 mt-70 sm-mt-40 advertisement-area">
-                                <div class="advertisement">
-                                    <a href="#"><img src="../../../static/front/images/ad/ad_sidebar-2.png" alt=""></a>
-                                </div>
-                            </aside>
-                            <!-- Start post layout E -->
-                            <aside class="zm-post-lay-e-area col-sm-6 col-md-12 col-lg-12 sm-mt-60 mt-70">
-                                <div class="row mb-40">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="section-title">
-                                            <h2 class="h6 header-color inline-block uppercase">Editor’s Picks</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="zm-posts">
-                                            <!-- Start single post layout E -->
-                                            <article class="zm-post-lay-e zm-single-post clearfix">
-                                                <div class="zm-post-thumb f-left">
-                                                    <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/9.jpg" alt="img"></a>
-                                                </div>
-                                                <div class="zm-post-dis f-right">
-                                                    <div class="zm-post-header">
-                                                        <h2 class="zm-post-title"><a href="blog-single-image.html">Magna aliqua ut enim ad minim veniam quis nostrud.</a></h2>
-                                                        <div class="zm-post-meta">
-                                                            <ul>
-                                                                <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </article>
-                                            <!-- Start single post layout E -->
-                                            <!-- Start single post layout E -->
-                                            <article class="zm-post-lay-e zm-single-post clearfix">
-                                                <div class="zm-post-thumb f-left">
-                                                    <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/22.jpg" alt="img"></a>
-                                                </div>
-                                                <div class="zm-post-dis f-right">
-                                                    <div class="zm-post-header">
-                                                        <h2 class="zm-post-title"><a href="blog-single-image.html">Enim ad minim veniam nostrud xercitation ullamco.</a></h2>
-                                                        <div class="zm-post-meta">
-                                                            <ul>
-                                                                <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </article>
-                                            <!-- Start single post layout E -->
-                                            <!-- Start single post layout E -->
-                                            <article class="zm-post-lay-e zm-single-post hidden-md clearfix">
-                                                <div class="zm-post-thumb f-left">
-                                                    <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/23.jpg" alt="img"></a>
-                                                </div>
-                                                <div class="zm-post-dis f-right">
-                                                    <div class="zm-post-header">
-                                                        <h2 class="zm-post-title"><a href="blog-single-image.html">Laboris nisi ut aliquip dolor in elit reprehenderit velit esse.</a></h2>
-                                                        <div class="zm-post-meta">
-                                                            <ul>
-                                                                <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </article>
-                                            <!-- Start single post layout E -->
-                                            <!-- Start single post layout E -->
-                                            <article class="zm-post-lay-e zm-single-post hidden-md clearfix">
-                                                <div class="zm-post-thumb f-left">
-                                                    <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/24.jpg" alt="img"></a>
-                                                </div>
-                                                <div class="zm-post-dis f-right">
-                                                    <div class="zm-post-header">
-                                                        <h2 class="zm-post-title"><a href="blog-single-image.html">Duis aute irure dolor in velit esse cillum fugiat nulla.</a></h2>
-                                                        <div class="zm-post-meta">
-                                                            <ul>
-                                                                <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </article>
-                                            <!-- Start single post layout E -->
-                                            <!-- Start single post layout E -->
-                                            <article class="zm-post-lay-e zm-single-post hidden-md clearfix">
-                                                <div class="zm-post-thumb f-left">
-                                                    <a href="blog-single-image.html"><img src="../../../static/front/images/post/e/25.jpg" alt="img"></a>
-                                                </div>
-                                                <div class="zm-post-dis f-right">
-                                                    <div class="zm-post-header">
-                                                        <h2 class="zm-post-title"><a href="blog-single-image.html">Laboris nisi ut aliquip dolor in elit reprehenderit velit esse.</a></h2>
-                                                        <div class="zm-post-meta">
-                                                            <ul>
-                                                                <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </article>
-                                            <!-- Start single post layout E -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </aside>
-                            <!-- Start post layout E -->
-                            <aside class="zm-post-lay-a-area col-sm-6 col-md-12 col-lg-12 mt-70 sm-mt-60">
-                                <div class="row mb-40">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="section-title">
-                                            <h2 class="h6 header-color inline-block uppercase">Today’s Tips</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="zm-posts">
-                                            <article class="zm-post-lay-a sidebar">
-                                                <div class="zm-post-thumb">
-                                                    <a href="blog-single-image.html"><img src="../../../static/front/images/post/b/2.jpg" alt="img"></a>
-                                                </div>
-                                                <div class="zm-post-dis">
-                                                    <div class="zm-post-header">
-                                                        <h2 class="zm-post-title h2"><a href="blog-single-image.html">Consectetur adipisicing elit sed eiusmod tempor incididunt.</a></h2>
-                                                        <div class="zm-post-meta">
-                                                            <ul>
-                                                                <li class="s-meta"><a href="#" class="zm-author">Thomson Smith</a></li>
-                                                                <li class="s-meta"><a href="#" class="zm-date">April 18, 2016</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </article>
-                                        </div>
-                                    </div>
-                                </div>
-                            </aside>
-                            <aside class="zm-post-lay-f-area col-sm-6 col-md-12 col-lg-12 sm-mt-40 mt-60">
-                                <div class="row mb-40">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="section-title">
-                                            <h2 class="h6 header-color inline-block uppercase">Recent Commented</h2>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <div class="zm-posts">
-                                            <!-- Start single post layout F -->
-                                            <div class="zm-post-lay-f zm-single-post clearfix">
-                                                <div class="zm-post-dis">
-                                                    <p><a href="#"> Nasir Uddin </a> - <em>“ Ut enim ad minim veniam, quis nostrud, sed do eiusmod tempor...” </em>  <strong>on Magna aliqua ut enim ad minim veniam quis nostrud.</strong></p>
-                                                </div>
-                                            </div>
-                                            <!-- Start single post layout F -->
-                                            <!-- Start single post layout F -->
-                                            <div class="zm-post-lay-f zm-single-post clearfix">
-                                                <div class="zm-post-dis">
-                                                    <p><a href="#"> Sayeed Ahmad </a> - <em> “ Ut enim ad minim veniam, quis nostrud, sed do eiusmod tempor...” </em> <strong>on Magna aliqua ut enim ad minim veniam quis nostrud.</strong></p>
-                                                </div>
-                                            </div>
-                                            <!-- Start single post layout F -->
-                                            <!-- Start single post layout F -->
-                                            <div class="zm-post-lay-f zm-single-post hidden-sm clearfix">
-                                                <div class="zm-post-dis">
-                                                    <p><a href="#"> ThemeHook </a> - <em> “ Ut enim ad minim veniam, quis nostrud, sed do eiusmod tempor...” </em> <strong>on Magna aliqua ut enim ad minim veniam quis nostrud.</strong></p>
-                                                </div>
-                                            </div>
-                                            <!-- Start single post layout F -->
-                                            <!-- Start single post layout F -->
-                                            <div class="zm-post-lay-f zm-single-post hidden-sm clearfix">
-                                                <div class="zm-post-dis">
-                                                    <p><a href="#"> Nasir Uddin </a> - <em> “ Ut enim ad minim veniam, quis nostrud, sed do eiusmod tempor...” </em> <strong>on Magna aliqua ut enim ad minim veniam quis nostrud.</strong></p>
-                                                </div>
-                                            </div>
-                                            <!-- Start single post layout F -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </aside>
-                        </div>
+                        {% include 'bnews/sidebar.html' %}
                     </div>
                     <!-- End Right sidebar -->
                 </div>
                 <!-- Start pagination area -->
-                <div class="row hidden-xs">
+                <div class="row">
                     <div class="zm-pagination-wrap mt-70">
                         <div class="container">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <nav class="zm-pagination ptb-40 text-center">
-                                        <ul class="page-numbers">
-                                            <li><a class="prev page-numbers" href="#">Previous</a></li>
-                                            <li><span class="page-numbers current">1</span></li>
-                                            <li><a class="page-numbers" href="#">2</a></li>
-                                            <li><a class="page-numbers" href="#">3</a></li>
-                                            <li><a class="page-numbers" href="#">4</a></li>
-                                            <li><a class="page-numbers" href="#">5</a></li>
-                                            <li><span class="page-numbers zm-pgi-dots">...</span></li>
-                                            <li><a class="page-numbers" href="#">15</a></li>
-                                            <li><a class="next page-numbers" href="#">Next</a></li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
+                            <div id="pagination-container"></div>
                         </div>
                     </div>
                 </div>
                 <!-- End pagination area -->
-                <!-- Start Advertisement -->
-                <div class="advertisement">
-                    <div class="row mt-40">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
-                            <a href="#"><img src="../../../static/front/images/ad/5.jpg" alt=""></a>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Advertisement -->
             </div>
         </div>
     </section>

@@ -1,3 +1,4 @@
+import random
 from html import escape
 
 from django.conf import settings
@@ -38,6 +39,11 @@ class Category(models.Model):
 
     def __str__(self):
         return '%s' % (self.category)
+
+    @property
+    def getCategoryPostCount(self):
+        post_count = Post.objects.filter(category=self).count()
+        return post_count
 
 
 class County(models.Model):
@@ -83,12 +89,27 @@ class Blogger(get_user_model()):
         super().save(*args, **kwargs)
 
     @property
+    def newsletterSubscribed(self):
+        nwlter = Newsletter.objects.filter(email=self.email).first()
+        # print(nwlter)
+        if nwlter:
+            return True
+        else:
+            return False
+
+    @property
     def postcount(self):
         return Post.objects.filter(blogger_id=self.id).count()
 
+    def bloggerSocialMedia(self):
+        print(BloggerSocialMedia.objects.filter(blogger_id=self.id).all())
+        return BloggerSocialMedia.objects.filter(blogger_id=self.id).all()
+
+def random_string():
+    return str(random.randint(1, 9999999))
 
 class Post(models.Model):
-    post_image = models.ImageField(max_length=200, upload_to='post-images', null=True, blank=True)
+    post_image = models.FileField( upload_to='post-images', null=True, blank=True)
     blogger = models.ForeignKey(Blogger, on_delete=models.CASCADE)
     title = models.CharField(max_length=200, null=False, blank=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=False, blank=False)
@@ -101,28 +122,63 @@ class Post(models.Model):
         ('INACTIVE', 'inactive'),
     }
     post_verify = models.CharField(choices=POST_VERIFY, default='INACTIVE', max_length=200, null=False, blank=False)
-    hit_count_generic = GenericRelation(HitCount, object_id_field='object_p',
-                                        related_query_name='hit_count_generic_relation')
+    hit_count_generic = GenericRelation(HitCount, object_id_field='object_pk', related_query_name='hit_count_generic_relation')
 
     def __str__(self):
         return self.title
 
     def save(self, *args, **kwargs):
-        if not self.id:
-            self.slug = slugify((self.title.lower()).replace(" ", "-"))
+        self.slug = slugify((self.title.lower()).replace(" ", "-") +'-'+random_string() )
+        super().save(*args, **kwargs)
 
-        super(Post, self).save(*args, **kwargs)
-    # def save(self, *args, **kwargs):
-    #     super(Post, self).save(*args, **kwargs)
-    #     value = self.title
-    #     self.slug = slugify(value, allow_unicode=True)
-    #     super().save(*args, **kwargs)
 
+    @property
+    def html_stripped(self):
+        from django.utils.html import strip_tags
+        return strip_tags(self.description)
+
+    @property
+    def getComments(self):
+        return Comment.objects.filter(post=self).all().order_by('-created_at')
+    @property
+    def getPrimaryComments(self):
+        return Comment.objects.filter(post=self, reply__isnull=True).all().order_by('-created_at')
+
+    def getSecondaryComments(self):
+        c = Comment.objects.filter(reply_id=self.id).order_by('-created_at')
+        print(c)
+        return c
+
+    @property
+    def checkInEdutorial(self):
+        e = EditorsPick.objects.filter(post_id=self.id, editor_status='ACTIVE').last()
+        if e:
+            return True
+        else:
+            return False
+
+    @property
+    def likecount(self):
+        post_count=PostLike.objects.filter(post_id=self.id).count()
+
+        return post_count
+
+    @property
+    def commentcount(self):
+        post_count=Comment.objects.filter(post=self).count()
+        return post_count
 
     def img_save(self, *args, **kwargs):
         new_image = compress(self.post_image)
         self.post_image = new_image
         super().save(*args, **kwargs)
+
+    @property
+    def getHitcountOfPost(self):
+        hit = HitCount.objects.filter(object_pk=self.id).first()
+        if hit:
+            return hit.hits
+        return  0
 
     @property
     def post_tag(self):
@@ -180,7 +236,12 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '%s %s', self.post.title, self.blogger.first_name
+        template = '{0.post}'
+        return template.format(self)
+
+    @property
+    def getSecondaryComments(self):
+        return Comment.objects.filter(reply_id=self.id).all().order_by('-created_at')
 
 
 class EditorsPick(models.Model):

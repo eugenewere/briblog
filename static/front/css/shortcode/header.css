@@ -130,7 +130,7 @@ nav.zm-secondary-menu ul li:last-child {
     height: 90px;
     padding: 20px;
     position: absolute;
-    right: 0;
+    /*right: 0;*/
     text-align: right;
     top: 100%;
     width: 500px;
@@ -289,6 +289,14 @@ nav.zm-secondary-menu ul li:last-child {
     transition: 0.3s;
 }
 .login-btn:hover{
+    color: #f0442c;
+}
+.login-btnn{
+    cursor: pointer;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+}
+.login-btnn:hover{
     color: #f0442c;
 }
 .zm-forget{

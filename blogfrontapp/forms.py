@@ -58,14 +58,15 @@ class BloggerForm(forms.Form, UserCreationForm):
         '''
         Only accept users aged 13 and above
         '''
-        userAge = 13
+        userAge = 18
         dob = self.cleaned_data.get('date_of_birth')
         today = date.today()
         if (dob.year + userAge, dob.month, dob.day) > (today.year, today.month, today.day):
             raise forms.ValidationError('Users must be aged 18 years old and above.'.format(userAge))
         return dob
 
-class PostForm(forms.Form):
+
+class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = [
@@ -74,3 +75,59 @@ class PostForm(forms.Form):
             'title',
             'post_image'
         ]
+
+
+class BloggerFormUpdate(forms.ModelForm):
+    class Meta:
+        model = Blogger
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'email',
+            'profile_image',
+            'county',
+            'gender',
+            'phone_number',
+            'date_of_birth',
+            'biography',
+        ]
+
+    def clean_date_of_birth(self):
+        super(BloggerFormUpdate, self).clean()
+        '''
+        Only accept users aged 13 and above
+        '''
+        userAge = 18
+        dob = self.cleaned_data.get('date_of_birth')
+        today = date.today()
+        if (dob.year + userAge, dob.month, dob.day) > (today.year, today.month, today.day):
+            raise forms.ValidationError('Users must be aged 18 years old and above.'.format(userAge))
+        return dob
+
+
+class BloggerSocialForm(forms.ModelForm):
+    class Meta:
+        model = BloggerSocialMedia
+        fields = [
+            'name',
+            'icon',
+            'blogger'
+        ]
+
+
+class MainSocialMediaForm(forms.ModelForm):
+    class Meta:
+        model = MainSocialMedia
+        fields = [
+            'name',
+            'icon',
+        ]
+
+    # def clean_blogger(self):
+    #     super(BloggerSocialForm, self).clean()
+    #     dob = self.cleaned_data.get('blogger')
+    #     blogger = Blogger.objects.filter(id=dob).first()
+    #     return blogger.id
+
+

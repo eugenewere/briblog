@@ -32,15 +32,15 @@
                       <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Add Post</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
                           </div>
                           <div class="modal-body">
-                             <form action="{% url 'BLOGBACK:addposts' %}" method="post" enctype="multipart/form-data">
+                             <form id="allpostform" action="{% url 'BLOGBACK:addposts' %}" method="post" enctype="multipart/form-data">
                                  {% csrf_token %}
-                                 <div class="form-group">
+                                <div class="form-group">
                                     <label for="">Upload Picture</label>
                                     <label for="profile_image" style="display: flex; justify-content:center; flex-direction: column;align-items: center; width: 100%; height: 400px; overflow:hidden;">
                                         <img style="width: 100%; height: 100%; object-fit: cover;" class="blah" src="{% static 'back/assets/SprySophisticatedKusimanse-small.gif' %}" alt="">
@@ -48,20 +48,24 @@
                                     <input required style="position: relative; display: none" onchange="readURL(this)" type="file"
                                            name="post_image" id="profile_image" class="inputfile"/>
                                  </div>
-                                  <div class="form-group">
-                                    <label for="exampleInputEmail1">Posts Title</label>
-                                    <input type="text" name="title" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Posts Title *</label>
+                                    <input required type="text" name="title" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
                                     <small id="emailHelp" class="form-text text-muted">Add Title</small>
                                   </div>
-                                 <div class=" form-group  " style="padding: 0;">
-                                    <label>Category</label> <br>
-                                    <select class="selectpicker" name="category">
+                                <div class=" form-group  " style="padding: 0;">
+                                    <label>Category * </label> <br>
+                                    {% if categories|length == 0  %}
+                                        <a class="text-danger" href="{% url 'BLOGBACK:category' %}"> Click To Add Category</a>
+                                    {% endif %}
+                                    <select  class="selectpicker" name="category">
+                                        <option selected> Choose Category</option>
                                         {% for c in categories %}
                                             <option value="{{ c.id }}">{{ c.category }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
-                                 <div class="form-group">
+                                <div class="form-group">
                                     <div class="form-group">
                                         <label>Description</label> <br>
                                         <textarea name="description" class="form-control" id="bio" ></textarea>
@@ -71,6 +75,7 @@
                                 <div class="card-body border-top">
                                     <h5 class="card-title">Multiple Category Tags</h5>
                                     <select class="selectpicker" name="category[]" multiple>
+                                         <option > Choose Tags</option>
                                         {% for c in categories %}
                                             <option value="{{ c.id }}">{{ c.category }}</option>
                                         {% endfor %}
@@ -84,126 +89,184 @@
                         </div>
                       </div>
                     </div>
-                    {% for post in myposts %}
-                        <div class="modal fade" id="editexampleModalLabel{{ post.id }}" tabindex="-1" aria-labelledby="editexampleModalLabel{{ post.id }}" aria-hidden="true">
-                          <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Edit Post</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                                 <form action="{% url 'BLOGBACK:edit_post' post.id %}" method="post" enctype="multipart/form-data">
-                                 {% csrf_token %}
-                                 {#post-images/Main-Banner1-1200x620.jpg#}
-
-                                 <div class="form-group">
-                                    <label for="">Upload Picture</label>
-                                    <label for="profile_image-{{ post.id }}" style="display: flex; justify-content:center; flex-direction: column;align-items: center; width: 100%; height: 400px; overflow:hidden;">
-                                        <img id="img{{ post.id }}" style="width: 100%; height: 100%; object-fit: cover;" class="blah2" src="{{ post.post_image.url }}" alt="">
-                                    </label>
-                                    <input value="{{ post.post_image }}" style="position: relative; display: none" type="file"
-                                           name="post_imageb" id="profile_image-{{ post.id }}" class="inputfile2"/>
-                                 </div>
-                                  <div class="form-group">
-                                    <label for="exampleInputEmail1{{ post.id }}">Posts Title</label>
-                                    <input value="{{ post.title }}" type="text" name="title" class="form-control" id="exampleInputEmail1{{ post.id }}" aria-describedby="emailHelp">
-                                    <small id="emailHelp" class="form-text text-muted">Add Title</small>
+                        {% for post in myposts %}
+                            <div class="modal fade" id="editexampleModalLabel{{ post.id }}" tabindex="-1" aria-labelledby="editexampleModalLabel{{ post.id }}" aria-hidden="true">
+                              <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Post</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
                                   </div>
-                                 <div class=" form-group  " style="padding: 0;">
-                                    <label for="{{ post.id }}kes">Category</label> <br>
-                                    <select id="{{ post.id }}kes" class="selectpicker" name="category">
-                                        {% for c in categories %}
-                                            <option {% if post.category.id == c.id %} selected {% endif %} value="{{ c.id }}">{{ c.category }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                 <div class="form-group">
-                                    <div class="form-group">
-                                        <label for="{{ post.id }}ie">Description</label> <br>
-                                        <textarea id="{{ post.id }}ie"  name="description" class="form-control bio_post" >{{ post.description }}</textarea>
-                                    </div>
-                                </div>
-                                <h5 class="card-title">Other</h5>
-                                <div class="card-body border-top">
-                                    <label for="{{ post.id }}tags" class="card-title">Multiple Category Tags</label>
-                                    <select id="{{ post.id }}tags" class="selectpicker" name="category[]" multiple>
-                                        {% for c in categories %}
-                                            <option
-                                                    {% for tag in post.post_tag %}
-                                                        {% if c.id == tag.category.id %}
-                                                          selected
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                    value="{{ c.id }}">{{ c.category }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                               <button type="submit" class="btn btn-success">Save </button>
-                            </form>
-                              </div>
-
-                            </div>
-                          </div>
-                        </div>
-                    {% endfor %}
-                    <div class="row">
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                               <div class="card">
-                                <h5 class="card-header">Your Posts Table</h5>
-                                <div class="card-body">
-                                    <button class="btn btn-success my-3" data-toggle="modal" data-target="#exampleModal">Add</button>
-                                    <div class="table-responsive">
-                                        <table id="myTable" class="table table-striped table-bordered first">
-                                             <thead>
-                                                <tr>
-                                                    <th scope="col">#</th>
-                                                    <th scope="col">Img</th>
-                                                    <th scope="col">Title</th>
-                                                    <th scope="col">Category</th>
-                                                    <th style="width: 200px;" scope="col">Tags</th>
-                                                    <th scope="col">Status</th>
-                                                    <th scope="col">Hit Count</th>
-                                                    <th scope="col">Created_at</th>
-                                                    <th scope="col">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for post in myposts %}
-                                                <tr>
-                                                    <th scope="row">{{forloop.counter}}</th>
-                                                    <td>
-                                                        <div style="width: 100px; height: 100px; border-radius: 10px; overflow: hidden">
-                                                            <img loading="lazy" style="width: 100%; height: 100%; object-fit: contain" src="{{ post.post_image.url }}" alt="">
-                                                        </div>
-                                                    </td>
-                                                    <td>{{post.title|title}}</td>
-                                                    <td>{{post.category.category}}</td>
-                                                    <td>
-                                                        {% for tag in post.post_tag %}
-                                                          <span style="padding: 5px 9px; border-radius: 10px; margin: 10px 3px; background-color: #d9d4d4; ">{{ tag.category.category|title }}</span>
-                                                        {% endfor %}
-                                                    </td>
-                                                    <td><span style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">{{post.post_verify}}</span></td>
-                                                    <td>{% get_hit_count for  post %}</td>
-                                                    <td>{{post.created_at|naturaltime}}</td>
-                                                    <td>
-                                                        <a href="" data-toggle="modal" data-target="#viewexampleModalLabel{{ post.id }}" class="btn btn-info btn-sm rounded">View</a>
-                                                        <a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ post.id }}" class="btn btn-success btn-sm rounded">Edit</a>
-                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
-                                                    </td>
-                                                </tr>
+                                  <div class="modal-body">
+                                     <form  action="{% url 'BLOGBACK:edit_post' post.id %}" method="post" enctype="multipart/form-data">
+                                         {% csrf_token %}
+                                         <div class="form-group">
+                                            <label for="">Upload Picture</label>
+                                            <label for="profile_image-{{ post.id }}" style="display: flex; justify-content:center; flex-direction: column;align-items: center; width: 100%; height: 400px; overflow:hidden;">
+                                                <img id="img{{ post.id }}" style="width: 100%; height: 100%; object-fit: cover;" class="blah2" src="{{ post.post_image.url }}" alt="">
+                                            </label>
+                                            <input value="{{ post.post_image }}" style="position: relative; display: none" type="file" name="post_image" id="profile_image-{{ post.id }}" class="inputfile2"/>
+                                         </div>
+                                         <div class="form-group">
+                                            <label for="exampleInputEmail1{{ post.id }}">Posts Title</label>
+                                            <input value="{{ post.title }}" type="text" name="title" class="form-control" id="exampleInputEmail1{{ post.id }}" aria-describedby="emailHelp">
+                                            <small id="emailHelp" class="form-text text-muted">Add Title</small>
+                                          </div>
+                                         <div class=" form-group  " style="padding: 0;">
+                                            <label for="{{ post.id }}kes">Category</label> <br>
+                                            <select id="{{ post.id }}kes" class="selectpicker" name="category">
+                                                {% for c in categories %}
+                                                    <option {% if post.category.id == c.id %} selected {% endif %} value="{{ c.id }}">{{ c.category }}</option>
                                                 {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                            </select>
+                                        </div>
+                                         <div class="form-group">
+                                            <div class="form-group">
+                                                <label for="{{ post.id }}ie">Description</label> <br>
+                                                <textarea id="{{ post.id }}ie"  name="description" class="form-control bio_post" >{{ post.description }}</textarea>
+                                            </div>
+                                        </div>
+                                         <h5 class="card-title">Other</h5>
+                                         <div class="card-body border-top">
+                                            <label for="{{ post.id }}tags" class="card-title">Multiple Category Tags</label>
+                                            <select id="{{ post.id }}tags" class="selectpicker" name="category[]" multiple>
+                                                {% for c in categories %}
+                                                    <option
+                                                            {% for tag in post.post_tag %}
+                                                                {% if c.id == tag.category.id %}
+                                                                  selected
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                            value="{{ c.id }}">{{ c.category }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                         <button type="submit" class="btn btn-success">Save </button>
+                                    </form>
+                                  </div>
+
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal fade" id="viewexampleModalLabel{{ post.id }}" tabindex="-1" aria-labelledby="viewexampleModalLabel{{ post.id }}" aria-hidden="true">
+                              <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{{ post.title|title }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                     <div class="container-fluid p-0">
+                                         <div class="col-sm-12 p-0">
+                                             <div class="col-sm-12 py-3">
+                                                 <a href="#">
+                                                     <span>
+                                                         <i class="fa fa-object-group"></i> {{ post.category.category }}
+                                                     </span>
+                                                 </a>
+                                                 <span style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">{{post.post_verify}}</span>
+                                             </div>
+                                             <div class="col-sm-12">
+                                                 <img class="w-100 rounded" src="{{ post.post_image.url }}" alt="">
+                                             </div>
+                                             <div class="col-sm-12 p-2">
+                                                 <h3 class="font-weight-bold">{{ post.title|title }}</h3>
+                                             </div>
+                                             <div class="col-sm-12 p-2">
+
+                                                 {% for tag in post.post_tag %}
+                                                  <span style="padding: 5px 9px; border-radius: 10px; margin: 10px 3px; background-color: #d9d4d4; ">{{ tag.category.category|title }}</span>
+                                                {% endfor %}
+                                             </div>
+                                            <div class="col-sm-12 p-4">
+                                                {{ post.description|safe|escape }}
+                                            </div>
+                                         </div>
+                                     </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal fade" id="deletepost{{ post.id }}" tabindex="-1" aria-labelledby="deletepost{{ post.id }}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Delete Post</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                     <p>Are You Sure You Want to delete</p>
+                                      <a href="{% url 'BLOGBACK:post_delete' post.id %}" class="btn-danger btn">Delete</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        {% endfor %}
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                           <div class="card">
+                            <h5 class="card-header">Your Posts Table</h5>
+                            <div class="card-body">
+                                <button class="btn btn-success my-3" data-toggle="modal" data-target="#exampleModal">Add</button>
+                                <div class="table-responsive">
+                                    <table id="myTable" class="table table-striped table-bordered first">
+                                         <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Img</th>
+                                                <th scope="col">Title</th>
+                                                <th scope="col">Category</th>
+                                                <th style="width: 200px;" scope="col">Tags</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Hit Count</th>
+                                                <th scope="col">Likes</th>
+                                                <th scope="col">Comments</th>
+                                                <th scope="col">Created_at</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for post in myposts %}
+                                            <tr>
+                                                <th scope="row">{{forloop.counter}}</th>
+                                                <td>
+                                                    <div style="width: 100px; height: 100px; border-radius: 10px; overflow: hidden">
+                                                        <img loading="lazy" style="width: 100%; height: 100%; object-fit: contain" src="{{ post.post_image.url }}" alt="">
+                                                    </div>
+                                                </td>
+                                                <td>{{post.title|title}}</td>
+                                                <td>{{post.category.category}}</td>
+                                                <td>
+                                                    {% for tag in post.post_tag %}
+                                                      <span style="padding: 5px 9px; border-radius: 10px; margin: 10px 3px; background-color: #d9d4d4; ">{{ tag.category.category|title }}</span>
+                                                    {% endfor %}
+                                                </td>
+                                                <td><span style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">{{post.post_verify}}</span></td>
+                                                <td>{% get_hit_count for  post %}</td>
+                                                <td>{{ post.likecount }}</td>
+                                                <td>{{ post.commentcount }}</td>
+                                                <td>{{post.created_at|naturaltime}}</td>
+                                                <td>
+                                                    <a href="" data-toggle="modal" data-target="#viewexampleModalLabel{{ post.id }}" class="btn btn-info btn-sm rounded">View</a>
+                                                    <a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ post.id }}" class="btn btn-success btn-sm rounded">Edit</a>
+                                                    <a href="" data-toggle="modal"  data-target="#deletepost{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            </div>
                         </div>
+                        </div>
+                    </div>
                 {% else %}
                     <div class="row">
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
@@ -221,155 +284,143 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                             <form action="{% url 'BLOGBACK:addcategory' %}" method="post">
-                                 {% csrf_token %}
-                                  <div class="form-group">
-                                    <label for="exampleInputEmail1">Posts Title</label>
-                                    <input type="text" name="category" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                                    <small id="emailHelp" class="form-text text-muted">Add Post</small>
-                                  </div>
-    {#                          <button type="submit" class="btn btn-success">Submit</button>#}
-    {#                           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>#}
-                               <button type="submit" class="btn btn-success">Save </button>
-                            </form>
-                          </div>
-
-                        </div>
-                      </div>
-                    </div>
-                    {% for category in categories %}
-                        <div class="modal fade" id="editexampleModalLabel{{ category.id }}" tabindex="-1" aria-labelledby="editexampleModalLabel{{ category.id }}" aria-hidden="true">
-                          <div class="modal-dialog">
+                    {% for post in allposts %}
+                        <div class="modal fade" id="viewexampleModalLabel{{ post.id }}" tabindex="-1" aria-labelledby="viewexampleModalLabel{{ post.id }}" aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                               <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">{{ post.title|title }}</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                                 </button>
                               </div>
                               <div class="modal-body">
-                                 <form action="{% url 'BLOGBACK:editcategory' category.id %}" method="post">
-                                     {% csrf_token %}
-                                  <div class="form-group">
-                                    <label for="exampleInputEmail1{{ category.id }}">Category Name</label>
-                                    <input type="text" value="{{ category.category }}" name="category" class="form-control" id="exampleInputEmail1{{ category.id }}" aria-describedby="emailHelp">
-                                    <small id="emailHelp" class="form-text text-muted">Edit Category</small>
-                                  </div>
-        {#                          <button type="submit" class="btn btn-success">Submit</button>#}
-        {#                           <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>#}
-                                   <button type="submit" class="btn btn-success">Save </button>
-                                </form>
-                              </div>
+                                 <div class="container-fluid p-0">
+                                     <div class="col-sm-12 p-0">
+                                         <div class="col-sm-12 py-3">
+                                             <a href="#">
+                                                 <span>
+                                                     <i class="fa fa-object-group"></i> {{ post.category.category }}
+                                                 </span>
+                                             </a>
+                                             <span style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">{{post.post_verify}}</span>
 
-                            </div>
-                          </div>
-                        </div>
-                        <div class="modal fade" id="deleteexampleModal{{ category.id }}" tabindex="-1" aria-labelledby="deleteexampleModalLabel{{ category.id }}" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Delete Category</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                                 <p>Are You Sure You Want to delete</p>
-                                  <a href="{% url 'BLOGBACK:deletecategory' category.id %}" class="btn-danger btn">Delete</a>
-                              </div>
+                                             <a href="" data-editor-id="{{ post.id }}" class="
+                                                badge
+                                                {% if post.checkInEdutorial %}
+                                                 badge-success{% else %}
+                                                 badge-primary{% endif %}
+                                                  change-editor">
 
+                                                 {% if post.checkInEdutorial %}
+                                                 Editors Choice{% else %}
+                                                 Add To Editors Pic{% endif %}
+                                             </a>
+                                         </div>
+                                         <div class="col-sm-12">
+                                             <img class="w-100 rounded" src="{{ post.post_image.url }}" alt="">
+                                         </div>
+                                         <div class="col-sm-12 p-2">
+                                             <h3 class="font-weight-bold">{{ post.title|title }}</h3>
+                                         </div>
+                                         <div class="col-sm-12 p-2">
+
+                                             {% for tag in post.post_tag %}
+                                              <span style="padding: 5px 9px; border-radius: 10px; margin: 10px 3px; background-color: #d9d4d4; ">{{ tag.category.category|title }}</span>
+                                            {% endfor %}
+                                         </div>
+                                        <div class="col-sm-12 p-4">
+                                            {{ post.description|safe|escape }}
+                                        </div>
+                                     </div>
+                                 </div>
+                              </div>
                             </div>
                           </div>
                         </div>
                     {% endfor %}
                     <div class="row">
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                               <div class="card">
-                                <h5 class="card-header">All Posts Table</h5>
-                                <div class="card-body">
-                                    <button class="btn btn-success my-3" data-toggle="modal" data-target="#exampleModal">Add</button>
-                                    <div class="table-responsive">
-                                        <table id="myTable" class="table table-striped table-bordered first">
-                                             <thead>
-                                                <tr>
-                                                    <th scope="col">#</th>
-                                                    <th scope="col">Img</th>
-                                                    <th scope="col">Title</th>
-                                                    <th scope="col">Category</th>
-                                                    <th style="width: 200px;" scope="col">Tags</th>
-                                                    <th scope="col">Status</th>
-                                                    <th scope="col">Hit Count</th>
-                                                    <th scope="col">Created_at</th>
-                                                    <th scope="col">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for post in allposts %}
-                                                <div class="modal fade" id="deleteexampleModal{{ post.id }}" tabindex="-1" aria-labelledby="deleteexampleModalLabel{{ post.id }}" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Delete Post</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                                 <p>Are You Sure You Want to delete</p>
-                                  <a href="{% url 'BLOGBACK:post_delete' post.id %}" class="btn-danger btn">Delete</a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                           <div class="card">
+                            <h5 class="card-header">All Posts Table</h5>
+                            <div class="card-body">
+{#                                <button class="btn btn-success my-3" data-toggle="modal" data-target="#exampleModal">Add</button>#}
+                                <div class="table-responsive">
+                                    <table id="myTable" class="table table-striped table-bordered first">
+                                         <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Img</th>
+                                                <th scope="col">Title</th>
+                                                <th scope="col">Category</th>
+                                                <th style="width: 200px;" scope="col">Tags</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Hit Count</th>
+                                                <th scope="col">Likes</th>
+                                                <th scope="col">Comments</th>
 
-                                                <tr>
-                                                    <th scope="row">{{forloop.counter}}</th>
-                                                    <td>
-                                                        <div style="width: 100px; height: 100px; border-radius: 10px; overflow: hidden">
-                                                            <img loading="lazy" style="width: 100%; height: 100%; object-fit: contain" src="{{ post.post_image.url }}" alt="">
+                                                <th scope="col">Created_at</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for post in allposts %}
+                                                <div class="modal fade" id="deleteexampleModal{{ post.id }}" tabindex="-1" aria-labelledby="deleteexampleModalLabel{{ post.id }}" aria-hidden="true">
+                                                      <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                          <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Delete Post</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                              <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                          </div>
+                                                          <div class="modal-body">
+                                                             <p>Are You Sure You Want to delete</p>
+                                                              <a href="{% url 'BLOGBACK:post_delete' post.id %}" class="btn-danger btn">Delete</a>
+                                                          </div>
                                                         </div>
-                                                    </td>
-                                                    <td>{{post.title|title}}</td>
-                                                    <td>{{post.category.category}}</td>
-                                                    <td>
-                                                        {% for tag in post.post_tag %}
-                                                          <span style="padding: 5px 9px; border-radius: 10px; margin: 10px 3px; background-color: #d9d4d4; ">{{ tag.category.category|title }}</span>
-                                                        {% endfor %}
-                                                    </td>
-                                                    <td>
-                                                        <a class="change-status" data-post-id="{{ post.id }}" data-post-status="{{post.post_verify}}" href="">
-                                                            <span  style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">
-                                                                {{post.post_verify|title }}
-                                                            </span>
-                                                        </a>
-                                                    </td>
-                                                    <td>{% get_hit_count for  post %}</td>
-                                                    <td>{{post.created_at|naturaltime}}</td>
-                                                    <td>
-                                                        <a href="" data-toggle="modal" data-target="#viewexampleModalLabel{{ post.id }}" class="btn btn-info btn-sm rounded">View</a>
-                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
-                                                        {#<a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ post.id }}" class="btn btn-success btn-sm rounded">Edit</a>#}
+                                                      </div>
+                                                    </div>
+                                                <tr>
+                                                <th scope="row">{{forloop.counter}}</th>
+                                                <td>
+                                                    <div style="width: 100px; height: 100px; border-radius: 10px; overflow: hidden">
+                                                        <img loading="lazy" style="width: 100%; height: 100%; object-fit: contain" src="{{ post.post_image.url }}" alt="">
+                                                    </div>
+                                                </td>
+                                                <td>{{post.title|title}}</td>
+                                                <td>{{post.category.category}}</td>
+                                                <td>
+                                                    {% for tag in post.post_tag %}
+                                                      <span style="padding: 5px 9px; border-radius: 10px; margin: 10px 3px; background-color: #d9d4d4; ">{{ tag.category.category|title }}</span>
+                                                    {% endfor %}
+                                                </td>
+                                                <td>
+                                                    <a class="change-status" data-post-id="{{ post.id }}" data-post-status="{{post.post_verify}}" href="">
+                                                        <span  style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">
+                                                            {{post.post_verify|title }}
+                                                        </span>
+                                                    </a>
+                                                </td>
+                                                <td>{% get_hit_count for  post %}</td>
+                                                <td>{{ post.likecount }}</td>
+                                                <td>{{ post.commentcount }}</td>
+                                                <td>{{post.created_at|naturaltime}}</td>
+                                                <td>
+                                                    <a href="" data-toggle="modal" data-target="#viewexampleModalLabel{{ post.id }}" class="btn btn-info btn-sm rounded">View</a>
+                                                    <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+                                                    {#<a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ post.id }}" class="btn btn-success btn-sm rounded">Edit</a>#}
 {#                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>#}
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            </div>
                         </div>
+                        </div>
+                    </div>
                 {% endif %}
 
             </div>
@@ -380,14 +431,8 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                            Copyright © 2018 Concept. All rights reserved. Dashboard by <a href="https://colorlib.com/wp/">Colorlib</a>.
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                            <div class="text-md-right footer-links d-none d-sm-block">
-                                <a href="javascript: void(0);">About</a>
-                                <a href="javascript: void(0);">Support</a>
-                                <a href="javascript: void(0);">Contact Us</a>
-                            </div>
+                            Copyright ©
+                            <script>let d = new Date(); document.write(d.getFullYear())</script> Concept. All rights reserved. Dashboard by .
                         </div>
                     </div>
                 </div>
@@ -417,8 +462,9 @@
         var allEditors = document.querySelectorAll('.bio_post');
         for (var i = 0; i < allEditors.length; ++i) {
           ClassicEditor.create(allEditors[i],{
-              removePlugins: [ 'Insert image', 'Insert media', 'Title' ],
-              toolbar: [
+                    {#removePlugins: [  'Image','Media' ],#}
+                    removePlugins: [ 'Insert image', 'Insert media', 'Title' ],
+                    toolbar: [
                          'heading',
                          'Paragraph',
                          'Highlight',
@@ -455,7 +501,7 @@
                          'Underline',
                          'Word count',
                          'numberedList'],
-          });
+               })
         }
         $('.change-status').each(function (e) {
             $(this).click(function (e) {
@@ -480,6 +526,27 @@
                   });
             });
         });
+        $('.change-editor').each(function (e) {
+            $(this).click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-editor-id');
+                {#var status = $(this).attr('data-post-status');#}
+                var loca = "{% url 'BLOGBACK:add_edutorial_pick' %}";
+                var element = $(this);
+                var data = {id: id,};
+                $.post(loca, data, function(data, status){
+                    if ( data['status'] === 'ACTIVE'){
+                        $(element).removeClass('badge-primary').addClass('badge-success')
+                        $(element).text('Editors Choice');
+                    }
+                    else if(data['status'] === 'INACTIVE'){
+                         $(element).removeClass('badge-success').addClass('badge-primary')
+                        $(element).text('Add To Editors Pick');
+                    }
+                  });
+            });
+        });
+
     })
     function readURL(input) {
         if (input.files && input.files[0]) {

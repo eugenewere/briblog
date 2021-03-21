@@ -59,7 +59,7 @@
 }
 .zm-post-lay-a1 {
   min-height: 530px;
-  overflow: hidden;
+  /*overflow: hidden;*/
   margin-bottom: 30px;
 }
 .followus-area.small-columns .social-btn .btn_text{

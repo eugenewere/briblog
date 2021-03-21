@@ -23,7 +23,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('brianadmin/', include('blogbackapp.urls')),
     path('', include('blogfrontapp.urls')),
+    path('hitcount/', include(('hitcount.urls', 'hitcount'), namespace='hitcount')),
     path('oauth/', include('social_django.urls', namespace='social')),  # <--
+    path('accounts/', include('django.contrib.auth.urls')),
 
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

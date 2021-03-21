@@ -1,0 +1,482 @@
+{% extends 'back/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+{% block link %}
+
+{% endblock link %}
+{% block content %}
+    <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <!-- ============================================================== -->
+                <!-- pageheader -->
+                <!-- ============================================================== -->
+                {% if not request.user.is_superuser and not blogger.group_status|upper == 'VIEWER' %}
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="page-header">
+                                <h2 class="pageheader-title">Your Social Media Handles </h2>
+                                <p class="pageheader-text">Add, Edit And Delete.</p>
+                                <div class="page-breadcrumb">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="{% url 'BLOG:home' %}" class="breadcrumb-link">Dashboard</a></li>
+                                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Your Social Media Handles</a></li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="modal fade" id="addmainsocial" tabindex="-1" aria-labelledby="addmainsocial" aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add Post</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <div class="col-sm-12" style="display: contents">
+                                     <form id="registerform" action="{% url 'BLOG:addsocial' %}" enctype="multipart/form-data" method="post">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <input type="text" name="blogger" value="{{ blogger.id }}" hidden>
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="single-input">
+                                                    <label>Link <span style="color: red;">*</span></label>
+                                                    <input required  name="name" placeholder="Icon  eg http://www.abc.com" type="url">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+
+                                                <div class="single-input">
+                                                    <label>Icon <span style="color: red;">*</span> </label>
+                                                    <input required  name="icon" placeholder="Icon  eg <i class='fab fa-facebook-f'></i>" type="text">
+                                                </div>
+                                                 <span>
+                                                    <a href="https://fontawesome.com" target="_blank"> Get Icons FontAwesome</a>
+
+                                                </span>
+                                            </div>
+                                            <div class="row" style="padding: 0 37px;">
+                                                <button type="submit" class="submit-button">Save</button>
+                                            </div>
+                                        </div>
+                                     </form>
+                                  </div>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                        {% for social in bloggerSocials %}
+                            <div class="modal fade" id="uuuumjj{{ social.id }}" tabindex="-1" aria-labelledby="uuuumjj{{ social.id }}" aria-hidden="true">
+                              <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Social</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                     <form id="registerform" action="{% url 'BLOG:updatesocial' social.id %}" enctype="multipart/form-data" method="post">
+                                        {% csrf_token %}
+                                        <div class="row" style="padding: 5px; border-radius: 5px; border: 1px solid darkgrey; margin-bottom: 5px;">
+                                                <input type="text" name="blogger" value="{{ blogger.id }}" hidden>
+                                                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                                                    <div class="single-input mb-0">
+                                                        <label>Link <span style="color: red;">*</span></label>
+                                                        <input class="form-control" required value="{{ social.name }}" name="name" placeholder="Link" type="url">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+
+                                                    <div class="single-input mb-0">
+                                                        <label>Icon <span style="color: red;">*</span> </label>
+                                                        <input class="form-control" required value="{{ social.icon }}" name="icon" placeholder="Icon class name eg <i class='fab fa-facebook-f'></i>" type="text">
+                                                    </div>
+                                                     <span>
+                                                        <a href="https://fontawesome.com" target="_blank"> Get Icons FontAwesome</a>
+                                                    </span>
+                                                </div>
+                                                <div class="row" style="padding: 0 37px;">
+                                                    <button type="submit" class="btn btn-success rounded" style="width: 60% !important;">Update</button>
+                                                    <a href="" data-toggle="modal" data-target="#deletesocial{{ social.id }}" class="btn btn-danger ml-auto">
+                                                        <i class="fa fa-trash text-white"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                    </form>
+                                  </div>
+
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal fade" id="dlte{{ social.id }}" tabindex="-1" aria-labelledby="dlte{{ social.id }}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Delete Confirmation</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <p>Are you sure you want to delete : <strong>{{ social.name }}</strong>  </p>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <a href="{% url 'BLOG:deletesocial' social.id %}" type="button" class="btn btn-danger">Delete</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        {% endfor %}
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                           <div class="card">
+                            <h5 class="card-header">Your Social Media Handles</h5>
+                            <div class="card-body">
+                                <button class="btn btn-success my-3" data-toggle="modal" data-target="#addmainsocial">Add</button>
+                                <div class="table-responsive">
+                                     <table id="myTable" class="table table-striped table-bordered first">
+                                         <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Icon</th>
+                                                <th scope="col">Url</th>
+                                                <th scope="col">Created_at</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for social in bloggerSocials %}
+                                            <tr>
+                                                <th scope="row">{{forloop.counter}}</th>
+                                                <th scope="row">{{ social.icon|safe }}</th>
+                                                <th scope="row">{{ social.url }}</th>
+
+                                                <td>{{social.created_at|naturaltime}}</td>
+                                                <td>
+                                                    <a href="" data-toggle="modal" data-target="#uuuumjj{{ social.id }}" class="btn btn-success btn-sm rounded">Edit</a>
+                                                    <a href="" data-toggle="modal"  data-target="#dlte{{ social.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="page-header">
+                                <h2 class="pageheader-title">Your Social Media Handles </h2>
+                                <p class="pageheader-text">Verify and Delete.</p>
+                                <div class="page-breadcrumb">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="{% url 'BLOGBACK:home' %}" class="breadcrumb-link">Dashboard</a></li>
+                                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Your Social Media Handles</a></li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="modal fade" id="addsocial" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add Post</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <div class="col-sm-12" style="display: contents">
+                                     <form id="registerform" action="{% url 'BLOGBACK:addsocial' %}" enctype="multipart/form-data" method="post">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <input type="text" name="blogger" value="{{ blogger.id }}" hidden>
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                                <div class="single-input">
+                                                    <label>Link <span style="color: red;">*</span></label>
+                                                    <input class="form-control" required  name="name" placeholder="Link eg http://www.abc.com" type="url">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 col-sm-12 col-xs-12">
+
+                                                <div class="single-input">
+                                                    <label>Icon <span style="color: red;">*</span> </label>
+                                                    <input class="form-control" required  name="icon" placeholder="Icon class name eg <i class='fab fa-facebook-f'></i>" type="text">
+                                                </div>
+                                                 <span>
+                                                    <a href="https://fontawesome.com" target="_blank"> Get Icons FontAwesome</a>
+
+                                                </span>
+                                            </div>
+                                            <div class="row" style="padding: 0 37px;">
+                                                <button type="submit" class="btn btn-success">Save</button>
+                                            </div>
+                                        </div>
+                                     </form>
+                                  </div>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                     {% for social in mainsocial %}
+                        <div class="modal fade" id="bloggresocial{{ social.id }}" tabindex="-1" aria-labelledby="bloggresocial{{ social.id }}" aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit Social</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <form id="registerform" action="{% url 'BLOGBACK:updatesocial' social.id %}" enctype="multipart/form-data" method="post">
+                                    {% csrf_token %}
+                                    <div class="row" style="padding: 5px; border-radius: 5px; border: 1px solid darkgrey; margin-bottom: 5px;">
+                                            <input type="text" name="blogger" value="{{ blogger.id }}" hidden>
+                                            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+                                                    <div class="single-input mb-0">
+                                                        <label>Link <span style="color: red;">*</span></label>
+                                                        <input class="form-control" value="{{ social.name }}" required name="name" placeholder="Link eg http://www.abc.com" type="url">
+                                                    </div>
+                                                </div>
+                                            <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
+
+                                                <div class="single-input mb-0">
+                                                    <label>Icon <span style="color: red;">*</span> </label>
+                                                    <input class="form-control" required value="{{ social.icon }}" name="icon" placeholder="Icon class name eg <i class='fab fa-facebook-f'></i>" type="text">
+                                                </div>
+                                                 <span>
+                                                    <a href="https://fontawesome.com" target="_blank"> Get Icons FontAwesome</a>
+                                                </span>
+                                            </div>
+                                            <div class="row" style="padding: 0 37px;">
+                                                <button type="submit" class="btn btn-success rounded" style="width: 60% !important;">Update</button>
+                                                <a href="" data-toggle="modal" data-target="#deletesocial{{ social.id }}" class="btn btn-danger ml-auto">
+                                                    <i class="fa fa-trash text-white"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                </form>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+                        <div class="modal fade" id="deletepost{{ social.id }}" tabindex="-1" aria-labelledby="deletepost{{ social.id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete Confirmation</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <p>Are you sure you want to delete : <strong>{{ social.name }}</strong>  </p>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <a href="{% url 'BLOGBACK:deletesocial' social.id %}" type="button" class="btn btn-danger">Delete</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                           <div class="card">
+                            <h5 class="card-header">Your Social Media Handles</h5>
+                            <div class="card-body">
+                                <button class="btn btn-success my-3" data-toggle="modal" data-target="#addsocial">Add</button>
+                                <div class="table-responsive">
+                                    <table id="myTable" class="table table-striped table-bordered first">
+                                         <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Icon</th>
+                                                <th scope="col">Url</th>
+                                                <th scope="col">Created_at</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for social in mainsocial %}
+                                            <tr>
+                                                <th scope="row">{{forloop.counter}}</th>
+                                                <th scope="row">{{ social.icon|safe }}</th>
+                                                <th scope="row">{{ social.url }}</th>
+
+                                                <td>{{social.created_at|naturaltime}}</td>
+                                                <td>
+                                                    <a href="" data-toggle="modal" data-target="#bloggresocial{{ social.id }}" class="btn btn-success btn-sm rounded">Edit</a>
+                                                    <a href="" data-toggle="modal"  data-target="#deletepost{{ social.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <div class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                            Copyright ©
+                            <script>let d = new Date(); document.write(d.getFullYear())</script> Concept. All rights reserved. Dashboard by .
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- end footer -->
+            <!-- ============================================================== -->
+        </div>
+{% endblock content %}
+{% block script %}
+    <script>
+    $(document).ready(function () {
+        $('.inputfile2').each(function (e) {
+            $(this).change(function (e) {
+                var inputt = $(this).parent().find('img').attr('id');
+                 if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (element) {
+                        $('#'+inputt).attr('src', element.target.result);
+                        {#console.log(element.target.result);#}
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                    {#console.log(reader);#}
+                }
+            });
+        });
+        var allEditors = document.querySelectorAll('.bio_post');
+        for (var i = 0; i < allEditors.length; ++i) {
+          ClassicEditor.create(allEditors[i],{
+                    {#removePlugins: [  'Image','Media' ],#}
+                    removePlugins: [ 'Insert image', 'Insert media', 'Title' ],
+                    toolbar: [
+                         'heading',
+                         'Paragraph',
+                         'Highlight',
+                         'bold',
+                         'italic',
+                         'FontFamily',
+                         'FontSize',
+                         'FontColor',
+                         'FontBackgroundColor',
+                         'Indent',
+                         'IndentBlock',
+                         'TextTransformation',
+                         'blockQuote',
+                         'Autoformat',
+                         'undo',
+                         'redo',
+                         'link',
+                         'bulletedList',
+                         'Alignment',
+                         'Code',
+                         'Codeblock',
+                         'Highlight',
+                         'Horizontalline',
+                         'MathType',
+                         'Markdown',
+                         'Mention',
+                         'Page break',
+                         'Media embed toolbar',
+                         'Special characters',
+                         'Standard editing mode',
+                         'Strikethrough',
+                         'Subscript',
+                         'Superscript',
+                         'Underline',
+                         'Word count',
+                         'numberedList'],
+               })
+        }
+        $('.change-status').each(function (e) {
+            $(this).click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-post-id');
+                var status = $(this).attr('data-post-status');
+                var loca = "{% url 'BLOGBACK:edit_post_status' %}";
+                var element = $(this);
+                var data = {
+                    id: id,
+                    status: status,
+                  };
+                $.post(loca, data, function(data, status){
+                    if ( data['status'] === 'ACTIVE'){
+                        $(element).children('span').css('background-color','green');
+                        $(element).children('span').text('Active');
+                    }
+                    else if(data['status'] === 'INACTIVE'){
+                        $(element).children('span').css('background-color','red');
+                        $(element).children('span').text('Inactive');
+                    }
+                  });
+            });
+        });
+        $('.change-editor').each(function (e) {
+            $(this).click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-editor-id');
+                {#var status = $(this).attr('data-post-status');#}
+                var loca = "{% url 'BLOGBACK:add_edutorial_pick' %}";
+                var element = $(this);
+                var data = {id: id,};
+                $.post(loca, data, function(data, status){
+                    if ( data['status'] === 'ACTIVE'){
+                        $(element).removeClass('badge-primary').addClass('badge-success')
+                        $(element).text('Editors Choice');
+                    }
+                    else if(data['status'] === 'INACTIVE'){
+                         $(element).removeClass('badge-success').addClass('badge-primary')
+                        $(element).text('Add To Editors Pick');
+                    }
+                  });
+            });
+        });
+
+    })
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+         var reader = new FileReader();
+         reader.onload = function (element) {
+            $('.blah').attr('src', element.target.result);
+             {#console.log(element.target.result);#}
+        };
+         reader.readAsDataURL(input.files[0]);
+         {#console.log(reader);#}
+        }
+     }
+
+
+
+
+    </script>
+{% endblock script %}

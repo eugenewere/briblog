@@ -1,0 +1,356 @@
+{% extends 'back/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+{% block link %}
+
+{% endblock link %}
+{% block content %}
+    <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <!-- ============================================================== -->
+                <!-- pageheader -->
+                <!-- ============================================================== -->
+
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="page-header">
+                                <h2 class="pageheader-title">User Account </h2>
+                                <p class="pageheader-text">Verify and Delete.</p>
+                                <div class="page-breadcrumb">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item"><a href="{% url 'BLOGBACK:home' %}" class="breadcrumb-link">Dashboard</a></li>
+                                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">User Account</a></li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                           <div class="card">
+                            <h5 class="card-header">Your Social Media Handles</h5>
+                            <div class="card-body">
+                                 <!-- Modal -->
+                                <div class="modal fade" id="changepassoword" tabindex="-1" aria-labelledby="changepassoword" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Change Passoword</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                        </button>
+                                      </div>
+                                      <div class="modal-body">
+                                          <form action="{% url 'BLOGBACK:changepassword' %}" method="post">
+                                              {% csrf_token %}
+                                               <div class="single-input">
+                                                    <label>Old <span style="color: red;">*</span></label>
+                                                    <input class="form-control" required name="old_password" placeholder="Password" type="password">
+                                                </div>
+                                              <div class="single-input">
+                                                    <label>New Password <span style="color: red;">*</span></label>
+                                                    <input class="form-control" required name="new_password1" placeholder="Confirm Password" type="password">
+                                                </div>
+                                              <div class="single-input">
+                                                    <label>Confirm New Password <span style="color: red;">*</span></label>
+                                                    <input class="form-control" required name="new_password2" placeholder="Confirm Password" type="password">
+                                                </div>
+                                                  <button class="submit-button mt-3">
+                                                      Change Password
+                                                  </button>
+                                          </form>
+                                      </div>
+
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-sm-12">
+                                     <button type="button" class="btn btn-success" style="margin-bottom: 10px" data-toggle="modal" data-target="#changepassoword">
+                                      Change Password
+                                    </button>
+                                    <div class="row">
+                                         <div class="registation-form-wrap w-100">
+                                            {% if request.user.is_superuser %}
+                                                <form class="w-100" id="registerform" action="{% url 'BLOGBACK:updatemainuserdetails' %}" enctype="multipart/form-data" method="post">
+                                                {% csrf_token %}
+                                                <div class="col-sm-12 col-lg-12 row">
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <div class="single-input">
+                                                            <label>First Name <span style="color: red;">*</span></label>
+                                                            <input class="form-control"  value="{{ request.user.first_name }}" name="first_name" placeholder="First Name" type="text">
+                                                        </div>
+                                                       <div class="single-input">
+                                                            <label>Email <span style="color: red;">*</span></label>
+                                                            <input class="form-control" required value="{{ request.user.email }}" name="email" placeholder="Email" type="text">
+                                                       </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <div class="single-input">
+                                                            <label>Last Name <span style="color: red;">*</span></label>
+                                                            <input class="form-control"  value="{{ request.user.last_name }}" name="last_name" placeholder="Last Name" type="text">
+                                                        </div>
+                                                        <div class="single-input">
+                                                            <label>Username <span style="color: red;">*</span></label>
+                                                            <input class="form-control" required value="{{ request.user.username }}" name="username" placeholder="Username" type="text">
+                                                        </div>
+
+                                                    </div>
+
+                                                </div><button  class="btn btn-success mt-20 inline-block" type="submit">Update</button>
+
+
+
+
+                                            </form>
+                                            {% else %}
+                                                <form id="registerform" action="{% url 'BLOGBACK:updateuserdetails' %}" enctype="multipart/form-data" method="post">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+
+                                                        <label for="">Upload Picture</label>
+                                                        <label for="profile_image" style="overflow:hidden; border-radius:20px; display: flex; justify-content:center; flex-direction: column;align-items: center; width: 300px; height: 300px;">
+                                                            <img class="blah" src="{% if blogger.profile_image %} {{ blogger.profile_image.url }} {% else %} {% static 'front/images/download.png' %} {% endif %}" alt="">
+                                                        </label>
+                                                        <input value="{% if blogger.profile_image %} {{ blogger.profile_image }} {% endif %}" style="position: relative; display: none" onchange="readURL(this)" type="file"
+                                                               name="profile_image" id="profile_image" class="inputfile"/>
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <div class="single-input">
+                                                            <label>First Name <span style="color: red;">*</span></label>
+                                                            <input class="form-control" required value="{{ blogger.first_name }}" name="first_name" placeholder="First Name" type="text">
+                                                        </div>
+                                                       <div class="single-input">
+                                                            <label>Email <span style="color: red;">*</span></label>
+                                                            <input class="form-control" required value="{{ blogger.email }}" name="email" placeholder="Email" type="text">
+                                                       </div>
+                                                       <div class="single-input">
+                                                            <label>County <span style="color: red;">*</span></label>
+                                                            <select class="form-control" required name="county" id="">
+                                                               <option >Choose county</option>
+                                                                {% for county in counties %}
+                                                                   <option {% if blogger.county.id == county.id %} selected {% endif %} value="{{ county.id }}">{{ county.county|title }}</option>
+                                                                {% endfor %}
+                                                           </select>
+                                                       </div>
+                                                        <div class="single-input">
+                                                            <label>Phone Number <span style="color: red;">*</span></label>
+                                                            <input class="form-control" value="{{ blogger.phone_number }}" name="phone_number" placeholder="Phone Number" type="text">
+                                                       </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                                        <div class="single-input">
+                                                            <label>Last Name <span style="color: red;">*</span></label>
+                                                            <input class="form-control" required value="{{ blogger.last_name }}" name="last_name" placeholder="Last Name" type="text">
+                                                        </div>
+                                                        <div class="single-input">
+                                                            <label>Username <span style="color: red;">*</span></label>
+                                                            <input class="form-control" required value="{{ blogger.username }}" name="username" placeholder="Username" type="text">
+                                                        </div>
+                                                        <div class="single-input">
+                                                            <label>Date Of Birth <span style="color: red;">*</span></label>
+                                                            <input class="form-control"  value="{{ blogger.date_of_birth|date:'Y-m-d' }}" name="date_of_birth" placeholder="Date Of Birth" type="date">
+                                                       </div>
+                                                       <div class="single-input">
+                                                            <label>Gender <span style="color: red;">*</span></label>
+                                                           <select class="form-control" required name="gender" id="">
+                                                               <option >Choose gender</option>
+                                                               <option {% if blogger.gender == 'male' %} selected {% endif %} value="male">Male</option>
+                                                               <option {% if blogger.gender == 'female' %} selected {% endif %} value="female">Female</option>
+                                                           </select>
+                        {#                                    <input name="email" placeholder="Email" type="text">#}
+                                                       </div>
+
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        <div class="single-input">
+                                                            <label>Biography</label> <br>
+                                                            <textarea name="biography" id="bio" cols="30" rows="10">
+                                                                {{ blogger.biography }}
+                                                            </textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% if not blogger.newsletterSubscribed %}
+                                                <div class="row">
+                                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                                        <div class="single-input">
+                                                            <label>NewsLetter</label> <br>
+                                                            <input name="newsletter" value="1" class="remember" type="checkbox">Subscribe to our NewsLetter
+                                                            <button  class="btn btn-success mt-20 inline-block" type="submit">Update</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% else %}
+                                                <div class="row">
+                                                    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                                                        <div class="single-input">
+                                                            <label>NewsLetter</label> <br>
+                                                            <input name="newsletter" value="0" class="remember" type="checkbox">UnSubscribe from our NewsLetter
+                                                            <button  class="btn btn-success mt-20 inline-block" type="submit">Update</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+
+
+                                            </form>
+
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+            </div>
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+            <div class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                            Copyright ©
+                            <script>let d = new Date(); document.write(d.getFullYear())</script> Concept. All rights reserved. Dashboard by .
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ============================================================== -->
+            <!-- end footer -->
+            <!-- ============================================================== -->
+        </div>
+{% endblock content %}
+{% block script %}
+    <script>
+    $(document).ready(function () {
+        $('.inputfile2').each(function (e) {
+            $(this).change(function (e) {
+                var inputt = $(this).parent().find('img').attr('id');
+                 if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (element) {
+                        $('#'+inputt).attr('src', element.target.result);
+                        {#console.log(element.target.result);#}
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                    {#console.log(reader);#}
+                }
+            });
+        });
+        var allEditors = document.querySelectorAll('.bio_post');
+        for (var i = 0; i < allEditors.length; ++i) {
+          ClassicEditor.create(allEditors[i],{
+                    {#removePlugins: [  'Image','Media' ],#}
+                    removePlugins: [ 'Insert image', 'Insert media', 'Title' ],
+                    toolbar: [
+                         'heading',
+                         'Paragraph',
+                         'Highlight',
+                         'bold',
+                         'italic',
+                         'FontFamily',
+                         'FontSize',
+                         'FontColor',
+                         'FontBackgroundColor',
+                         'Indent',
+                         'IndentBlock',
+                         'TextTransformation',
+                         'blockQuote',
+                         'Autoformat',
+                         'undo',
+                         'redo',
+                         'link',
+                         'bulletedList',
+                         'Alignment',
+                         'Code',
+                         'Codeblock',
+                         'Highlight',
+                         'Horizontalline',
+                         'MathType',
+                         'Markdown',
+                         'Mention',
+                         'Page break',
+                         'Media embed toolbar',
+                         'Special characters',
+                         'Standard editing mode',
+                         'Strikethrough',
+                         'Subscript',
+                         'Superscript',
+                         'Underline',
+                         'Word count',
+                         'numberedList'],
+               })
+        }
+        $('.change-status').each(function (e) {
+            $(this).click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-post-id');
+                var status = $(this).attr('data-post-status');
+                var loca = "{% url 'BLOGBACK:edit_post_status' %}";
+                var element = $(this);
+                var data = {
+                    id: id,
+                    status: status,
+                  };
+                $.post(loca, data, function(data, status){
+                    if ( data['status'] === 'ACTIVE'){
+                        $(element).children('span').css('background-color','green');
+                        $(element).children('span').text('Active');
+                    }
+                    else if(data['status'] === 'INACTIVE'){
+                        $(element).children('span').css('background-color','red');
+                        $(element).children('span').text('Inactive');
+                    }
+                  });
+            });
+        });
+        $('.change-editor').each(function (e) {
+            $(this).click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr('data-editor-id');
+                {#var status = $(this).attr('data-post-status');#}
+                var loca = "{% url 'BLOGBACK:add_edutorial_pick' %}";
+                var element = $(this);
+                var data = {id: id,};
+                $.post(loca, data, function(data, status){
+                    if ( data['status'] === 'ACTIVE'){
+                        $(element).removeClass('badge-primary').addClass('badge-success')
+                        $(element).text('Editors Choice');
+                    }
+                    else if(data['status'] === 'INACTIVE'){
+                         $(element).removeClass('badge-success').addClass('badge-primary')
+                        $(element).text('Add To Editors Pick');
+                    }
+                  });
+            });
+        });
+
+    })
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+         var reader = new FileReader();
+         reader.onload = function (element) {
+            $('.blah').attr('src', element.target.result);
+             {#console.log(element.target.result);#}
+        };
+         reader.readAsDataURL(input.files[0]);
+         {#console.log(reader);#}
+        }
+     }
+
+
+
+
+    </script>
+{% endblock script %}

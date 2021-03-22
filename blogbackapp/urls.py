@@ -26,6 +26,7 @@ urlpatterns = [
     path('edit_status/', views.edit_post_status, name='edit_post_status'),
     path('edutorial_pick/', views.edutorial_pick, name='edutorial_pick'),
     path('add_edutorial_pick/', views.add_edutorial_pick, name='add_edutorial_pick'),
+    path('contactusread/', views.contactusread, name='contactusread'),
 
     path('comments/', views.comments, name='comments'),
     path('social/', views.social, name='social'),
@@ -43,6 +44,8 @@ urlpatterns = [
     path('newsletter/', views.newsletter, name='newsletter'),
     path('sendemail/', views.sendemail, name='sendemail'),
     path('del_newsletter/<int:news_id>', views.del_newsletter, name='del_newsletter'),
+
+    path('contact/', views.contact, name='contact'),
 
 
 ]

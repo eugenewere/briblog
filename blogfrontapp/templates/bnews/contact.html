@@ -14,13 +14,14 @@
                     </div>
                 </div>
                 <div class="message-box">
-                    <form action="https://www.devsnews.com/template/znews/znews/mail.php"  id="contact-form" method="post">
+                    <form action="{% url 'BLOG:addcontact' %}"  id="contact-form" method="post">
+                        {% csrf_token %}
                         <div class="row">
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" name="name" placeholder="Full Name*">
-                                <input type="email" name="email" placeholder="Email Address*">
-                                <input type="text" name="phone" placeholder="Phone Number">
-                                <input type="text" name="website" placeholder="Website">
+                                <input type="text" required name="name" placeholder="Full Name*">
+                                <input type="email" required name="email" placeholder="Email Address*">
+                                <input type="text" required name="phone" placeholder="Phone Number">
+                                <input type="url" name="website" placeholder="Website">
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <textarea name="message" placeholder="Type your message..."></textarea>

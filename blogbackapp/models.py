@@ -265,3 +265,21 @@ class Newsletter(models.Model):
 
     def __str__(self):
         return '%s' % (self.email)
+
+
+class ContactUsEmployee(models.Model):
+    name = models.CharField(max_length=200, null=False, blank=False)
+    email = models.CharField(max_length=200, null=False, blank=False)
+    phone = models.CharField(max_length=200, null=False, blank=False)
+    website = models.CharField(max_length=200, null=False, blank=False)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    EMPLOYEEMESSAGECHOICES = {
+        ('READ', 'Read'),
+        ('UNREAD', 'Unread'),
+    }
+    status = models.CharField(max_length=200, null=True, blank=True, choices=EMPLOYEEMESSAGECHOICES, default='UNREAD')
+
+    def _str__(self):
+        return '%s (%s) ' % (self.name, (self.email))

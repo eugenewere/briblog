@@ -1,10 +1,226 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'back/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block links %}
+    <style>
+        .contactss.active th, .contactss.active td {
+            font-weight: bolder;
+            color: black;
+        }
+        .cont.contactss th, .contactss td {
+            font-weight: lighter;
+            color: #4c4c4c;
+        }
+    </style>
+{% endblock links %}
+{% block content %}
+    <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <!-- ============================================================== -->
+                <!-- pageheader -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="page-header">
+                            <h2 class="pageheader-title">Contact Us </h2>
+                            <p class="pageheader-text">Add, Edit And Delete.</p>
+                            <div class="page-breadcrumb">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="{% url 'BLOGBACK:home' %}" class="breadcrumb-link">Dashboard</a></li>
+                                        <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Contact Us</a></li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- end pageheader -->
+                <!-- ============================================================== -->
+                <!-- Modal -->
+                {% for contact in contacts %}
+                    <div class="modal fade" id="editexampleModalLabel{{ contact.id }}" tabindex="-1" aria-labelledby="editexampleModalLabel{{ contact.id }}" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{ contact.name|title }}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
 
-</body>
-</html>
+                              <div class="col-sm-12 col-md-6 ">
+                                <span class=" nav-divider">
+                                    Name:
+                                </span>
+                                <div class="col pl-3">
+                                    {{ contact.name|title }}
+                                </div>
+
+                              </div>
+                              <div class="col-sm-12 col-md-6 ">
+                                <span class=" nav-divider">
+                                    Email:
+                                </span>
+                                <div class="col pl-3">
+                                    {{ contact.email }}
+                                </div>
+
+                              </div>
+                              <div class="col-sm-12 col-md-6 ">
+                                <span class=" nav-divider">
+                                    Phone:
+                                </span>
+                                <div class="col pl-3">
+                                    {{ contact.phone }}
+                                </div>
+
+                              </div>
+                              {% if contact.website %}
+                                  <div class="col-sm-6 ">
+                                    <span class=" nav-divider">Link:</span>
+                                    <div class="col pl-3">
+                                        {{ contact.website }}
+                                    </div>
+
+                                  </div>
+                              {% endif %}
+                              <div class="col-sm-12">
+                                <span class="nav-divider">
+                                    Description
+                                </span>
+                                <div class="col pl-3">
+                                    {{ contact.message }}
+                                </div>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal fade" id="deleteexampleModal{{ contact.id }}" tabindex="-1" aria-labelledby="deleteexampleModalLabel{{ contact.id }}" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Delete contact</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                             <p>Are You Sure You Want to delete</p>
+{#                              <a href="{% url 'BLOGBACK:deletecategory' contact.id %}" class="btn-danger btn">Delete</a>#}
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                {% endfor %}
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                           <div class="card">
+                            <h5 class="card-header">Contact Us</h5>
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table id="myTable" class="table table-striped table-bordered first">
+                                         <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Phone</th>
+                                                <th scope="col">Website</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Created_at</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for contact in contacts %}
+                                            <tr class="contactss {% if contact.status == 'UNREAD' %}active{% endif %}">
+                                                <th scope="row">{{forloop.counter}}</th>
+                                                <td>{{contact.name}}</td>
+                                                <td>{{contact.email}}</td>
+                                                <td>{{contact.phone}}</td>
+                                                <td>{{contact.website}}</td>
+                                                <td class="statuss">{{contact.status}}</td>
+                                                <td>{{contact.created_at|naturalday}}</td>
+                                                    <td>
+                                                        <a href=""
+                                                           data-contact-id="{{ contact.id }}"
+                                                           data-toggle="modal"
+                                                           data-target="#editexampleModalLabel{{ contact.id }}"
+                                                           class="btn contact-view btn-success btn-sm rounded">
+                                                            View
+                                                        </a>
+{#                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ contact.id }}" class="btn btn-danger btn-sm rounded">Delete</a>#}
+                                                    </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+            </div>
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+             <div class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                     Copyright ©
+                    <script>var c = new Date(); document.write(c.getFullYear())</script> Concept. All rights reserved.
+                </div>
+
+            </div>
+        </div>
+    </div>
+            <!-- ============================================================== -->
+            <!-- end footer -->
+            <!-- ============================================================== -->
+        </div>
+{% endblock content %}
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $('.contact-view').each(function () {
+                $(this).click(function () {
+                    let contact_id = $(this).data('contact-id'),
+                    this_parrent =$(this).closest('tr.contactss');
+
+                     var loca = "{% url 'BLOGBACK:contactusread' %}";
+                    var data = {id: contact_id,};
+                    $.post(loca, data, function(data, status){
+                    if ( data['status'] === 'READ'){
+                        $(this_parrent).removeClass('active')
+                        $(this_parrent).find('.statuss').text('READ')
+                    }
+                  });
+                })
+            })
+        })
+    </script>
+{% endblock script %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

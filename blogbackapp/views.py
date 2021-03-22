@@ -25,6 +25,7 @@ def home(request):
         newsletter = Newsletter.objects.all()
         editorial_pick = EditorsPick.objects.all()
         likes = PostLike.objects.all()
+        contactus = ContactUsEmployee.objects.all()
         context = {
             'mainpage': 'mainpage',
             'posts':posts,
@@ -35,8 +36,8 @@ def home(request):
             'newsletter':newsletter,
             'editorial_pick':editorial_pick,
             'likes':likes,
+            'contactus':contactus
         }
-
         return render(request, 'back/index.html', context)
 
 
@@ -60,7 +61,6 @@ def home(request):
             'editorial_pick': editorial_pick,
             'likes': likes,
         }
-
         return render(request, 'back/index.html', context)
 
 
@@ -324,6 +324,30 @@ def add_edutorial_pick(request):
         return JsonResponse(context)
 
 
+@csrf_exempt
+def contactusread(request):
+    global context
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        contact = ContactUsEmployee.objects.filter(id=id).first()
+        if contact:
+            if contact.status == "UNREAD":
+                ContactUsEmployee.objects.filter(id=contact.id).update(
+                    status='READ',
+                )
+                context = {
+                    'status': "READ"
+                }
+                return JsonResponse(context)
+            pass
+        else:
+            context = {
+                'status': "UNREAD"
+            }
+
+    return JsonResponse(context)
+
+
 def comments(request):
     user = request.user.id
     blogger = Blogger.objects.filter(user_ptr_id=user).first()
@@ -538,3 +562,10 @@ def del_newsletter(request, news_id):
         sweetify.error(request, "Error", text="Error deleted Subscriber", persistent='Ok')
 
     return redirect(request.META["HTTP_REFERER"])
+
+
+def contact(request):
+    context = {
+        'contacts': ContactUsEmployee.objects.order_by('-created_at')
+    }
+    return render(request, 'back/contactus.html', context)

@@ -80,6 +80,19 @@ def contact(request):
     return render(request, 'bnews/contact.html', context)
 
 
+def addcontact(request):
+    if request.method == 'POST':
+        form = ContactUsForm(request.POST)
+        print(form)
+        if form.is_valid():
+            form.save()
+            sweetify.success(request, title='Success', text="Thanks for submitting. We will reach out soon", persistent='Continue')
+        else:
+            sweetify.error(request, "Error", text="Error Submitting Details", persistent='Ok')
+
+    return redirect('BLOG:contact')
+
+
 def register(request):
     context = {
         'title': 'Register',

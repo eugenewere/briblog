@@ -27,9 +27,7 @@ class BloggerForm(forms.Form, UserCreationForm):
             'date_of_birth',
             'biography',
 
-
         ]
-
 
     def clean_username(self):
         super(BloggerForm, self).clean()
@@ -124,10 +122,14 @@ class MainSocialMediaForm(forms.ModelForm):
             'icon',
         ]
 
-    # def clean_blogger(self):
-    #     super(BloggerSocialForm, self).clean()
-    #     dob = self.cleaned_data.get('blogger')
-    #     blogger = Blogger.objects.filter(id=dob).first()
-    #     return blogger.id
 
-
+class ContactUsForm(forms.ModelForm):
+    class Meta:
+        model = ContactUsEmployee
+        fields = [
+            'name',
+            'email',
+            'phone',
+            'message',
+            'website',
+        ]

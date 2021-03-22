@@ -10,6 +10,7 @@ urlpatterns = (
     path('', views.home, name='home'),
     path('timeline', views.timeline, name='timeline'),
     path('contact', views.contact, name='contact'),
+    path('addcontact', views.addcontact, name='addcontact'),
     path('register', views.register, name='register'),
     path('makeregister', views.makeregister, name='makeregister'),
     path('updateuserdetails', views.updateuserdetails, name='updateuserdetails'),

@@ -44,6 +44,7 @@
                                                 <div class="zm-post-content text-justify">
                                                     {{ allpost.description|truncatechars_html:600|safe|escape }}
                                                 </div>
+                                                <span style="padding: 3px; background-color: grey; border-radius: 3px; color: white">{{ allpost.description|safe|escape|wordcount  }} +</span>
                                             </div>
                                         </article>
                                     </div>

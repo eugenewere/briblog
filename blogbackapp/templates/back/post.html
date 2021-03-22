@@ -28,7 +28,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -305,6 +305,7 @@
                                              </a>
                                              <span style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">{{post.post_verify}}</span>
 
+                                             {% if request.user.is_superuser %}
                                              <a href="" data-editor-id="{{ post.id }}" class="
                                                 badge
                                                 {% if post.checkInEdutorial %}
@@ -315,7 +316,7 @@
                                                  {% if post.checkInEdutorial %}
                                                  Editors Choice{% else %}
                                                  Add To Editors Pic{% endif %}
-                                             </a>
+                                             </a>{% endif %}
                                          </div>
                                          <div class="col-sm-12">
                                              <img class="w-100 rounded" src="{{ post.post_image.url }}" alt="">

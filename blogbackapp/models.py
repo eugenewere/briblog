@@ -42,7 +42,7 @@ class Category(models.Model):
 
     @property
     def getCategoryPostCount(self):
-        post_count = Post.objects.filter(category=self).count()
+        post_count = Post.objects.filter(category=self, post_verify='ACTIVE').count()
         return post_count
 
 
@@ -99,7 +99,7 @@ class Blogger(get_user_model()):
 
     @property
     def postcount(self):
-        return Post.objects.filter(blogger_id=self.id).count()
+        return Post.objects.filter(blogger_id=self.id, post_verify='ACTIVE').count()
 
     def bloggerSocialMedia(self):
         print(BloggerSocialMedia.objects.filter(blogger_id=self.id).all())

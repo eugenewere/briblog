@@ -16,6 +16,9 @@
     .category-chip:hover{
         background-color: var(--accentColor);
     }
+    .category-chip.active{
+         background-color: var(--accentColor);
+    }
     </style>
 {% endblock links %}
 {% block content %}
@@ -34,16 +37,18 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-12" style="padding-bottom: 20px ">
+
+                                <div class="col-sm-12" style="padding-bottom: 60px ">
+                                    <h4 style="font-weight: bolder; padding: 10px 0;">Categories</h4>
                                     <form id="categ-form" hidden action="{% url 'BLOG:blogs' %}"method="post">
                                         <input type="text" name="typesearch" value="category">
                                         <input name="category" type="text" value="">
                                     </form>
-                                    <a class="category-chip subchip" href="javascript:void(0)" data-val="0">
+                                    <a class="category-chip subchip {% if c == 0 %}active{% endif %}" href="javascript:void(0)" data-val="0">
                                        All ({{ count|length }})
                                     </a>
                                     {% for cat in categories %}
-                                        <a class="category-chip subchip" href="javascript:void(0)" data-val="{{ cat.id }}">
+                                        <a class="category-chip subchip {% if c == cat.id %}active{% endif %}" href="javascript:void(0)" data-val="{{ cat.id }}">
                                             {{ cat.category|title }} ({{ cat.getCategoryPostCount }})
                                         </a>
                                     {% endfor %}
@@ -74,7 +79,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="zm-post-content">
-                                                                <p>{{ post.description|truncatechars_html:200|safe|escape }}</p>
+                                                                <p>{{ post.description|truncatechars_html:200|safe|escape }}</p>  <span style="padding: 3px; background-color: grey; border-radius: 3px; color: white">{{ post.description|safe|escape|wordcount  }} +</span>
                                                             </div>
                                                         </div>
                                                     </article>

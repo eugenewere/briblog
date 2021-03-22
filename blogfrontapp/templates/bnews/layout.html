@@ -116,6 +116,34 @@
             color: #000000 !important;
 
         }
+        /*
+ *  STYLE 7
+ */
+
+*::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+	border-radius: 10px;
+}
+
+*::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #F5F5F5;
+}
+
+*::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	background-image: -webkit-gradient(linear,
+									   left bottom,
+									   left top,
+									   color-stop(0.44, rgb(217, 122, 122)),
+									   color-stop(0.72, rgb(189, 73, 73)),
+									   color-stop(0.86, var(--accentColor)));
+}
+
     </style>
     <script src="{% static 'front/js/vendor/modernizr-2.8.3.min.js' %}"></script>
 {#    <script src="{% static 'front/js/ckeditor.js' %}"></script>#}
@@ -157,7 +185,7 @@
                                     <ul>
                                         <li><a href="{% url 'BLOG:home' %}">Home</a></li>
                                         <li><a href="{% url 'BLOG:contact' %}">About</a></li>
-                                        <li><a href="{% url 'BLOG:contact' %}">Contact</a></li>
+{#                                        <li><a href="{% url 'BLOG:contact' %}">Contact</a></li>#}
                                     </ul>
                                 </nav>
                             </div>
@@ -166,11 +194,10 @@
                             <div class="header-top-right clierfix text-right">
                                 <div class="header-social-bookmark topbar-sblock">
                                     <ul>
-                                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                                        <li><a href="#"><i class="fab fa-google-plus"></i></a></li>
-                                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                        <li><a href="#"><i class="fab fa-dribbble"></i></a></li>
-                                        <li><a href="#"><i class="fa fa-rss"></i></a></li>
+                                        {% for social in request|getMainSocials %}
+                                        <li><a target="_blank" href="{{ social.name }}">{{ social.icon|safe }}</a></li>
+                                        {% endfor %}
+
                                     </ul>
                                 </div>
                                 <div class="zmaga-calendar topbar-sblock">
@@ -205,7 +232,7 @@
                                             <a href="{% url 'BLOG:password_reset' %}" class="zm-forget">Forget username/password?</a>
                                             <div class="zm-login-social-box">
                                                 <a href="{% url 'social:begin' 'facebook' %}" class="social-btn bg-facebook block"><span class="btn_text"><i class="fa fa-facebook"></i>Login with Facebook</span></a>
-                                                <a href="#" class="social-btn bg-twitter block"><span class="btn_text"><i class="fa fa-twitter"></i>Login with Twitter</span></a>
+{#                                                <a href="#" class="social-btn bg-twitter block"><span class="btn_text"><i class="fa fa-twitter"></i>Login with Twitter</span></a>#}
                                             </div>
                                         </form>
                                     </div>
@@ -269,7 +296,7 @@
                                                     <li><a href="{% url 'BLOG:blogs' %}">Blogs</a></li>
                                                     <li><a href="{% url 'BLOG:timeline' %}">Timeline</a></li>
                                                     <li><a href="{% url 'BLOG:contact' %}">About</a></li>
-                                                    <li><a href="{% url 'BLOG:contact' %}">Contact</a></li>
+{#                                                    <li><a href="{% url 'BLOG:contact' %}">Contact</a></li>#}
                                                 </ul>
                                             </nav>
                                             <div class="search-wrap pull-right">
@@ -352,11 +379,9 @@
                                 <div class="zm-widget-content">
                                      <div class="zm-social-media zm-social-2">
                                         <ul>
-                                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                                             {% for social in request|getMainSocials %}
+                                                <li><a target="_blank" href="{{ social.name }}">{{ social.icon|safe }}</a></li>
+                                             {% endfor %}
                                         </ul>
                                     </div>
                                 </div>
@@ -371,7 +396,8 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div class="zm-copyright text-center">
-                                <p class="uppercase">&copy; 2016 Your Company. All Rights Reserved.</p>
+                                <p class="uppercase">&copy;
+                                    <script>var kk = new Date(); document.write(kk.getFullYear());</script> . All Rights Reserved.</p>
                             </div>
                         </div>
                     </div>
@@ -406,7 +432,7 @@
                             <a href="{% url 'BLOG:password_reset' %}" class="zm-forget">Forget username/password?</a>
                             <div class="zm-login-social-box">
                                 <a href="{% url 'social:begin' 'facebook' %}" class="social-btn bg-facebook block"><span class="btn_text"><i class="fa fa-facebook"></i>Login with Facebook</span></a>
-                                <a href="#" class="social-btn bg-twitter block"><span class="btn_text"><i class="fa fa-twitter"></i>Login with Twitter</span></a>
+{#                                <a href="#" class="social-btn bg-twitter block"><span class="btn_text"><i class="fa fa-twitter"></i>Login with Twitter</span></a>#}
                             </div>
                         </form>
                     </div>

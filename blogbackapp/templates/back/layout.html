@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="{% static 'back/assets/vendor/fonts/flag-icon-css/flag-icon.min.css' %}">
     <link rel="stylesheet" href="{% static 'back/dtables.css' %}">
     <link rel="stylesheet" href="{% static 'back/assets/vendor/bootstrap-select/css/bootstrap-select.css' %}">
+    <link rel="stylesheet" href="{% static 'back/assets/vendor/select2/css/select2.css' %}">
 
     <title>{{ title|title }}</title>
 {#    <script src="{% static 'back/assets/ckeditor5_2/build/ckeditor.js' %}"></script>#}
@@ -52,7 +53,7 @@
                 </button>
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
-                        <li class="nav-item">
+                        <li hidden class="nav-item">
                             <div id="custom-search" class="top-search-bar">
                                 <input class="form-control" type="text" placeholder="Search..">
                             </div>
@@ -81,23 +82,23 @@
                                 </li>
                                 {% else %}
                                      <li>
-                                    <div class="notification-title"> Notification</div>
-                                    <div class="notification-list">
-                                        <div class="list-group">
-                                            {% for comment in request|getAdminComments|slice:10 %}
-                                            <a href="#" class="list-group-item list-group-item-action active">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="{{ comment.blogger.profile_image.url }}" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block"><span class="notification-list-user-name">{{ comment.blogger.first_name|title }} {{ comment.blogger.last_name|title }}</span>
-                                                         {{ comment.msg_content|safe|escape|truncatechars_html:10 }}
-                                                        <div class="notification-date">{{ comment.created_at|naturaltime }}</div>
+                                        <div class="notification-title"> Notification</div>
+                                        <div class="notification-list">
+                                            <div class="list-group">
+                                                {% for comment in request|getAdminComments|slice:10 %}
+                                                <a href="#" class="list-group-item list-group-item-action active">
+                                                    <div class="notification-info">
+                                                        <div class="notification-list-user-img"><img src="{{ comment.blogger.profile_image.url }}" alt="" class="user-avatar-md rounded-circle"></div>
+                                                        <div class="notification-list-user-block"><span class="notification-list-user-name">{{ comment.blogger.first_name|title }} {{ comment.blogger.last_name|title }}</span>
+                                                             {{ comment.msg_content|safe|escape|truncatechars_html:10 }}
+                                                            <div class="notification-date">{{ comment.created_at|naturaltime }}</div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </a>
-                                            {% endfor %}
+                                                </a>
+                                                {% endfor %}
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
                                 {% endif %}
                                 <li>
                                     <div class="list-footer"> <a href="{% url 'BLOGBACK:comments' %}">View all notifications</a></div>
@@ -105,7 +106,13 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown nav-user">
-                            <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../../../static/back/assets/images/avatar-1.jpg" alt="" class="user-avatar-md rounded-circle"></a>
+                            <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% if request.user.is_superuser %}
+                                    <img src="../../../static/back/assets/images/avatar-1.jpg" alt="" class="user-avatar-md rounded-circle">
+                                {% else %}
+                                    <img src="{{ request|getbloggerimage }}" alt="" class="user-avatar-md rounded-circle">
+                                {% endif %}
+                            </a>
                             <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
                                 <div class="nav-user-info">
                                     <h5 class="mb-0 text-white nav-user-name">{{ request.user.username }}</h5>
@@ -141,11 +148,11 @@
                                 <a class="nav-link " href="{% url 'BLOGBACK:home' %}" ><i class="fa fa-fw fa-cogs"></i>Dashboard <span class="badge badge-success">6</span></a>
 
                             </li>
-                            {% if request.user.is_superuser %}
+{#                            {% if request.user.is_superuser %}#}
                                 <li class="nav-item">
                                     <a class="nav-link" href="{% url 'BLOGBACK:category' %}" ><i class="fa fa-fw fa-list-alt"></i>Category</a>
                                 </li>
-                            {% endif %}
+{#                            {% endif %}#}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'BLOGBACK:posts' %}" ><i class="fas fa-fw fa-hand-paper"></i>Posts</a>
                             </li>
@@ -154,13 +161,14 @@
                                     <a class="nav-link" href="{% url 'BLOGBACK:bloggers' %}" ><i class="fas fa-fw fa-user"></i>Bloggers</a>
                                 </li>
 
-                                <li class="nav-item">
+
+
+                            <li class="nav-item">
+                                <a class="nav-link" target="_blank" href="{% url 'BLOGBACK:newsletter' %}" ><i class="fas fa-fw fa-paper-plane"></i>Newsletter</a>
+                            </li>{% endif %}
+                            <li class="nav-item">
                                     <a class="nav-link" href="{% url 'BLOGBACK:edutorial_pick' %}" ><i class="fas fa-fw fa-edit"></i>Editors Pick</a>
                                 </li>
-                            {% endif %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'BLOGBACK:posts' %}" ><i class="fas fa-fw fa-paper-plane"></i>Newsletter</a>
-                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'BLOGBACK:comments' %}" ><i class="fas fa-fw fa-comment"></i>Comments</a>
                             </li>
@@ -214,6 +222,7 @@
     <script src="{% static 'back/assets/vendor/charts/c3charts/c3.min.js' %}"></script>
     <script src="{% static 'back/assets/vendor/charts/c3charts/d3-5.4.0.min.js' %}"></script>
     <script src="{% static 'back/assets/vendor/charts/c3charts/C3chartjs.js' %}"></script>
+    <script src="{% static 'back/assets/vendor/select2/js/select2.min.js' %}"></script>
     {% if mainpage %}
     <script src="{% static 'back/assets/libs/js/dashboard-ecommerce.js' %}"></script>
     {% endif %}
@@ -224,6 +233,9 @@
         $(document).ready( function () {
             $('#myTable').DataTable();
             $('#myTable1').DataTable();
+            $('.loadtb').each(function () {
+                 $('#'+$(this).attr('id')).DataTable();
+            })
 
             var editor = ClassicEditor
               .create( document.querySelector( '#bio' ),{
@@ -275,6 +287,9 @@
             } );
          } );
         var isSourceOn = false;
+         $(document).ready(function() {
+        $('.js-example-basic-multiple').select2({ tags: true });
+    });
 
         function saveMyEditor() {
           if(isSourceOn){

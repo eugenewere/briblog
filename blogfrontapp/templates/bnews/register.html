@@ -179,6 +179,7 @@
                 e.preventDefault();
                 {#spinner.show();#}
                 var new_form_data = new FormData(this);
+                $('.preloader-wrapper').show();
 
                 setTimeout(
                     $.ajax({
@@ -192,6 +193,7 @@
                     success : function(response){
                         {#spinner.hide();#}
                         if (response.results === 'success') {
+                            $('.preloader-wrapper').hide();
                              $('#error_div').fadeOut()
                             $("#registerform")[0].reset();
                             swal.fire({
@@ -205,6 +207,7 @@
                             }, 3000)
                          }
                         else {
+                            $('.preloader-wrapper').hide();
                             var resp = response['form']
                             let k = JSON.stringify(resp)
                             let str = JSON.parse(resp)
@@ -232,6 +235,7 @@
                          }
                     },
                     error : function(response){
+                        $('.preloader-wrapper').hide();
                         console.log(response);
                         {#spinner.hide();#}
 

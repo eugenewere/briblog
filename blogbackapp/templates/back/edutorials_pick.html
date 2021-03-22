@@ -48,6 +48,7 @@
                                                  </span>
                                              </a>
                                              <span style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">{{post.post_verify}}</span>
+                                            {% if request.user.is_superuser %}
                                              <a href="" data-editor-id="{{ post.id }}" class="
                                                 badge
                                                 {% if post.checkInEdutorial %}
@@ -57,7 +58,7 @@
                                                  {% if post.checkInEdutorial %}
                                                  Editors Choice{% else %}
                                                  Add To Editors Pick{% endif %}
-                                             </a>
+                                             </a>{% endif %}
                                          </div>
                                          <div class="col-sm-12">
                                              <img class="w-100 rounded" src="{{ post.post_image.url }}" alt="">
@@ -99,7 +100,9 @@
                                                 <th scope="col">Status</th>
 {#                                                <th scope="col">Hit Count</th>#}
                                                 <th scope="col">Created_at</th>
+                                                {% if request.user.is_superuser %}
                                                 <th scope="col">Action</th>
+                                                {% endif %}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -135,20 +138,30 @@
 {#                                                    {% endfor %}#}
 {#                                                </td>#}
                                                 <td>
+                                                    {% if request.user.is_superuser %}
                                                     <a class="change-status" data-post-id="{{ post.id }}" data-post-status="{{post.post_verify}}" href="">
                                                         <span  style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">
                                                             {{post.post_verify|title }}
                                                         </span>
                                                     </a>
+                                                        {% else %}
+                                                        <a class="" data-post-id="{{ post.id }}" data-post-status="{{post.post_verify}}" href="javascript:void(0)">
+                                                            <span  style="padding: 4px 6px; {% if post.post_verify|lower == 'inactive' %}background-color: red;{% else %}background-color: green;{% endif %} color: white; border-radius: 6px">
+                                                                {{post.post_verify|title }}
+                                                            </span>
+                                                        </a>
+                                                {% endif %}
                                                 </td>
 {#                                                <td>{% get_hit_count for  post %}</td>#}
-                                                <td>{{post.created_at|naturaltime}}</td>
+                                                <td>{{post.created_at|naturaltime}}</td> {% if request.user.is_superuser %}
                                                 <td>
+
                                                     <a href="" data-toggle="modal" data-target="#viewexampleModalLabel{{ post.id }}" class="btn btn-info btn-sm rounded">View</a>
                                                     <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+
                                                     {#<a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ post.id }}" class="btn btn-success btn-sm rounded">Edit</a>#}
 {#                                                        <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ post.id }}" class="btn btn-danger btn-sm rounded">Delete</a>#}
-                                                </td>
+                                                </td> {% endif %}
                                             </tr>
                                             {% endfor %}
                                         </tbody>

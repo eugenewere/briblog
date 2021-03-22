@@ -1,10 +1,146 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'back/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block link %}
 
-</body>
-</html>
+{% endblock link %}
+{% block content %}
+    <div class="dashboard-wrapper">
+            <div class="container-fluid dashboard-content">
+                <!-- ============================================================== -->
+                <!-- pageheader -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                        <div class="page-header">
+                            <h2 class="pageheader-title">NewsLetter </h2>
+                            <p class="pageheader-text">Add, Edit And Delete.</p>
+                            <div class="page-breadcrumb">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="{% url 'BLOGBACK:home' %}" class="breadcrumb-link">Dashboard</a></li>
+                                        <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">NewsLetter</a></li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- end pageheader -->
+                <!-- ============================================================== -->
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Send NewsLetter</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                         <form action="{% url 'BLOGBACK:sendemail' %}" method="post">
+                             {% csrf_token %}
+                              <div class="form-group">
+                                <label for="exampleInputEmail1">Subject **</label>
+                                <input required type="text" name="subject" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                              </div>
+                              <div class="form-group pt-2" data-select2-id="15">
+                                <label class="col-md-1 control-label">Cc **</label>
+                                <div class="col-md-12 p-0" >
+                                    <select required name="subscribers[]" class="js-example-basic-multiple select2-hidden-accessible" multiple="" tabindex="-1" aria-hidden="true">
+                                        {% for nw in newsletter %}
+                                            <option  value="{{ nw.email }}">{{ nw.email }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label for="exampleInputEmail1we3">Message **</label>
+                                 <textarea required class="form-control w-100" id="exampleInputEmail1we3" name="message"  rows="10"></textarea>
+                              </div>
+                           <button type="submit" class="btn btn-success">Save </button>
+                        </form>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                {% for new in newsletter %}
+                    <div class="modal fade" id="deleteexampleModal{{ new.id }}" tabindex="-1" aria-labelledby="deleteexampleModalLabel{{ new.id }}" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Delete Category</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                             <p>Are You Sure You Want to delete</p>
+                              <a href="{% url 'BLOGBACK:del_newsletter' new.id %}" class="btn-danger btn">Delete</a>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                {% endfor %}
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                           <div class="card">
+                            <h5 class="card-header">Newsletters Table</h5>
+                            <div class="card-body">
+                                <button class="btn btn-success my-3" data-toggle="modal" data-target="#exampleModal">Add</button>
+                                <div class="table-responsive">
+                                    <table id="myTable" class="table table-striped table-bordered first">
+                                         <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Subscribers</th>
+                                                <th scope="col">Created_at</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for nw in newsletter %}
+                                            <tr>
+                                                <th scope="row">{{forloop.counter}}</th>
+                                                <td><a href="mailto:{{nw.email}}">{{nw.email}}</a></td>
+                                                <td>{{nw.created_at|naturalday}}</td>
+                                                <td>
+{#                                                    <a href="" data-toggle="modal" data-target="#editexampleModalLabel{{ nw.id }}" class="btn btn-success btn-sm rounded">Edit</a>#}
+                                                    <a href="" data-toggle="modal"  data-target="#deleteexampleModal{{ nw.id }}" class="btn btn-danger btn-sm rounded">Delete</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+            </div>
+            <!-- ============================================================== -->
+            <!-- footer -->
+            <!-- ============================================================== -->
+             <div class="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                     Copyright ©
+                    <script>var c = new Date(); document.write(c.getFullYear())</script> Concept. All rights reserved.
+                </div>
+
+            </div>
+        </div>
+    </div>
+            <!-- ============================================================== -->
+            <!-- end footer -->
+            <!-- ============================================================== -->
+        </div>
+{% endblock content %}
+{% block script %}
+{% endblock script %}

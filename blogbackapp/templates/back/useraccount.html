@@ -123,7 +123,9 @@
                                                     <div class="col-md-6 col-sm-6 col-xs-12">
                                                         <div class="single-input">
                                                             <label>First Name <span style="color: red;">*</span></label>
-                                                            <input class="form-control" required value="{{ blogger.first_name }}" name="first_name" placeholder="First Name" type="text">
+                                                            <input required value="{% if blogger.first_name  %}
+                                                            {{ blogger.first_name }}
+                                                            {% endif %} " name="first_name" placeholder="First Name" type="text">
                                                         </div>
                                                        <div class="single-input">
                                                             <label>Email <span style="color: red;">*</span></label>
@@ -144,10 +146,9 @@
                                                        </div>
                                                     </div>
                                                     <div class="col-md-6 col-sm-6 col-xs-12">
-                                                        <div class="single-input">
-                                                            <label>Last Name <span style="color: red;">*</span></label>
-                                                            <input class="form-control" required value="{{ blogger.last_name }}" name="last_name" placeholder="Last Name" type="text">
-                                                        </div>
+                                                        <input required value="{% if blogger.last_name %}
+                                                             {{ blogger.last_name }}
+                                                            {% endif %}" name="last_name" placeholder="Last Name" type="text">
                                                         <div class="single-input">
                                                             <label>Username <span style="color: red;">*</span></label>
                                                             <input class="form-control" required value="{{ blogger.username }}" name="username" placeholder="Username" type="text">

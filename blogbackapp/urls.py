@@ -40,5 +40,9 @@ urlpatterns = [
 
     path('changepassword/', views.changepassword, name='changepassword'),
 
+    path('newsletter/', views.newsletter, name='newsletter'),
+    path('sendemail/', views.sendemail, name='sendemail'),
+    path('del_newsletter/<int:news_id>', views.del_newsletter, name='del_newsletter'),
+
 
 ]

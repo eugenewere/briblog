@@ -1,4 +1,8 @@
+import re
+
 from django import template
+from django.template.defaultfilters import stringfilter
+from django.utils.html import conditional_escape
 
 from blogbackapp.models import *
 
@@ -52,12 +56,47 @@ def footercategories(request):
 
     return list(set(list_category))
 
+
 @register.filter("getbloggerComments")
 def getbloggerComments(request):
-    blogger=Blogger.objects.filter(user_ptr_id=request.user.id).first()
+    blogger = Blogger.objects.filter(user_ptr_id=request.user.id).first()
     return Comment.objects.filter(blogger=blogger).order_by('-created_at')
 
 
 @register.filter("getAdminComments")
 def getAdminComments(request):
     return Comment.objects.order_by('-created_at')
+
+
+@register.filter("getbloggerimage")
+def getbloggerimage(request):
+    blogerr_img = Blogger.objects.filter(user_ptr_id=request.user.id).first()
+    return blogerr_img.profile_image.url
+
+
+@register.filter("getTodayTips")
+def getTodayTips(request):
+    return Post.objects.filter(post_verify='ACTIVE').order_by('-created_at')
+
+
+@register.filter("getEdutorialPicks")
+def getEdutorialPicks(request):
+    return EditorsPick.objects.filter(post__post_verify='ACTIVE').order_by('-created_at')
+
+
+@register.filter("getMainSocials")
+def getMainSocials(request):
+    return MainSocialMedia.objects.order_by('-created_at')
+
+
+@stringfilter
+def spacify(value, autoescape=None):
+    if autoescape:
+        esc = conditional_escape
+    else:
+        esc = lambda x: x
+    return mark_safe(re.sub('\s', '&' + 'nbsp;', esc(value)))
+
+
+spacify.needs_autoescape = True
+register.filter(spacify)

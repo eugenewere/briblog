@@ -163,13 +163,16 @@ LOGOUT_URL = 'BLOG:home'
 
 SOCIAL_AUTH_FACEBOOK_KEY = '746649342720717'
 SOCIAL_AUTH_FACEBOOK_SECRET = 'd889a66c0b7110761da974da5fbd4c42'
+# SOCIAL_AUTH_FACEBOOK_SECRET = 'd1afad05f5f093ccecea0586d92ade93'
 
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'Climatechangebasicske@gmail.com'
-EMAIL_HOST_PASSWORD = 'Brandoxvilla7123'
+EMAIL_HOST_USER = 'eugenecodedev@gmail.com'
+# EMAIL_HOST_USER = 'Climatechangebasicske@gmail.com'
+# EMAIL_HOST_PASSWORD = 'Brandoxvilla7123'
+EMAIL_HOST_PASSWORD = '123$insecure'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL: False

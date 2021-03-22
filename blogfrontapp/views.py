@@ -199,6 +199,7 @@ def blogs(request):
                 posts = Post.objects.filter(post_verify="ACTIVE").order_by('-created_at')
                 categories = Category.objects.all()
                 context = {
+                    'c': 0,
                     'title': 'Blogs',
                     'posts': posts,
                     'categories': categories,
@@ -210,6 +211,7 @@ def blogs(request):
                 posts = Post.objects.filter(category=cat,post_verify="ACTIVE").order_by('-created_at');
                 categories = Category.objects.all()
                 context = {
+                    'c':cat.id,
                     'title': cat.category + ' Blogs',
                     'posts': posts,
                     'categories': categories,
@@ -242,6 +244,7 @@ def blogs(request):
         posts = Post.objects.filter(post_verify="ACTIVE").order_by('-created_at')
         categories = Category.objects.all()
         context = {
+            'c': 0,
             'title': 'Blogs',
             'posts': posts,
             'categories': categories,
@@ -471,14 +474,20 @@ def replycomment(request, post_id, comment_id):
 
 
 def userAccount(request):
-    blogger =Blogger.objects.filter(user_ptr_id=request.user.id).first()
-    context = {
-        'title': blogger.first_name+' '+blogger.last_name,
-        'counties': County.objects.all(),
-        'blogger': blogger,
-        'socials': BloggerSocialMedia.objects.filter(blogger=blogger).all()
-    }
-    return render(request, 'bnews/useraccount.html', context)
+    blogger = Blogger.objects.filter(user_ptr_id=request.user.id).first()
+    if blogger:
+        name = 'userAccount'
+        if blogger.first_name is not None and blogger.last_name is not None:
+            name = blogger.first_name+' '+blogger.last_name
+
+        context = {
+            'title': name,
+            'counties': County.objects.all(),
+            'blogger': blogger,
+            'socials': BloggerSocialMedia.objects.filter(blogger=blogger).all()
+        }
+        return render(request, 'bnews/useraccount.html', context)
+    return  redirect('BLOG:home')
 
 
 

@@ -16,10 +16,55 @@ from blogfrontapp.forms import *
 
 @login_required
 def home(request):
-    context = {
-        'mainpage': 'mainpage',
-    }
-    return render(request, 'back/index.html', context)
+    if request.user.is_superuser:
+        posts = Post.objects.order_by('-created_at')
+        bloggers= Blogger.objects.order_by('-created_at')
+        comments = Comment.objects.order_by('-created_at')
+        social = MainSocialMedia.objects.all()
+        categories = Category.objects.all()
+        newsletter = Newsletter.objects.all()
+        editorial_pick = EditorsPick.objects.all()
+        likes = PostLike.objects.all()
+        context = {
+            'mainpage': 'mainpage',
+            'posts':posts,
+            'bloggers':bloggers,
+            'comments':comments,
+            'social':social,
+            'categories':categories,
+            'newsletter':newsletter,
+            'editorial_pick':editorial_pick,
+            'likes':likes,
+        }
+
+        return render(request, 'back/index.html', context)
+
+
+    else:
+        user = request.user
+        blogger= Blogger.objects.filter(user_ptr_id=user.id).first()
+        posts = Post.objects.filter(blogger=blogger).order_by('-created_at')
+        comments = Comment.objects.filter(post__blogger=blogger).order_by('-created_at')
+        social = BloggerSocialMedia.objects.filter(blogger=blogger).order_by('-created_at')
+        categories = Category.objects.all()
+        likes = PostLike.objects.filter(post__blogger=blogger).all()
+        editorial_pick = EditorsPick.objects.all()
+        context = {
+            'mainpage': 'mainpage',
+            'posts': posts,
+            'blogger': blogger,
+            'comments': comments,
+            'social': social,
+            'categories': categories,
+            # 'newsletter': newsletter,
+            'editorial_pick': editorial_pick,
+            'likes': likes,
+        }
+
+        return render(request, 'back/index.html', context)
+
+
+
 
 
 @login_required
@@ -280,9 +325,16 @@ def add_edutorial_pick(request):
 
 
 def comments(request):
+    user = request.user.id
+    blogger = Blogger.objects.filter(user_ptr_id=user).first()
     list_category = []
+    admin_list_category = []
+
     list_comment = []
-    commentss = Comment.objects.order_by('-created_at').all()
+    adminlist_comment = []
+
+    commentss = Comment.objects.filter(post__blogger=blogger).order_by('-created_at')
+    allcommentss = Comment.objects.order_by('-created_at')
     for c in commentss:
         list_category.append(c.post)
 
@@ -290,11 +342,21 @@ def comments(request):
         lcom = Comment.objects.filter(post_id=l.id).order_by('-created_at').first()
         list_comment.append(lcom)
 
+    for z in allcommentss:
+        admin_list_category.append(z.post)
+
+    for x in list(set(admin_list_category)):
+        lcomm = Comment.objects.filter(post_id=x.id).order_by('-created_at').first()
+        adminlist_comment.append(lcomm)
+
+    # print(admin_list_category, adminlist_comment)
+    # print(list_category, list_comment)
     context = {
         'title': 'Comments',
         'allposts': list(set(list_category)),
         'mylist': zip(list(set(list_category)), list(set(list_comment))),
-        # 'comments': list(set(list_comment))
+        'myadminlist': zip(list(set(admin_list_category)), list(set(adminlist_comment))),
+        'adminpost': list(set(admin_list_category))
     }
     return render(request, 'back/comments.html', context)
 
@@ -353,11 +415,12 @@ def userAccount(request):
     blogger = Blogger.objects.filter(user_ptr_id=request.user.id).first()
     context = {
         'title': 'UserAccount',
-        'counties':County.objects.all(),
-        'blogger':blogger,
-        'categories':Category.objects.all()
+        'counties': County.objects.all(),
+        'blogger': blogger,
+        'categories': Category.objects.all()
     }
     return render(request, 'back/useraccount.html', context)
+
 
 def updateuserdetails(request):
     if request.method == 'POST':
@@ -437,3 +500,41 @@ def changepassword(request):
     else:
         sweetify.error(request, 'Error', text='Error Changing Password', persistent='Ok')
         return redirect(request.META['HTTP_REFERER'])
+
+
+def newsletter(request):
+    context = {
+        'title': 'NewsLetter',
+        'newsletter': Newsletter.objects.all(),
+    }
+    return render(request, 'back/newsletter.html', context)
+
+
+def sendemail(request):
+    if request.method == 'POST':
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        subscribers = request.POST.getlist('subscribers[]')
+        print(subject, message, subscribers)
+        if subject and message and subscribers:
+            from django.core.mail import send_mail
+            try:
+                send_mail(subject, message, settings.EMAIL_HOST_USER, subscribers)
+                sweetify.success(request, 'Success', text='Mails Sent', persistent='Ok')
+            except Exception as ec:
+                print(ec)
+                sweetify.error(request, 'Error', text='Mails Not Sent', persistent='Ok')
+    else:
+        sweetify.error(request, 'Error', text='Mails Not Sent', persistent='Ok')
+    return redirect(request.META['HTTP_REFERER'])
+
+
+def del_newsletter(request, news_id):
+    social = Newsletter.objects.filter(id=news_id).first()
+    if social:
+        social.delete()
+        sweetify.success(request, "Success", text="Subscriber deleted", persistent='Ok')
+    else:
+        sweetify.error(request, "Error", text="Error deleted Subscriber", persistent='Ok')
+
+    return redirect(request.META["HTTP_REFERER"])
